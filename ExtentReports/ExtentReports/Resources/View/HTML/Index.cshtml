@@ -1,0 +1,85 @@
+﻿@using RazorEngine
+@using RazorEngine.Templating
+@using AventStack.ExtentReports.Reporter.Configuration.Defaults
+
+<!DOCTYPE html>
+<html>
+
+    @Include("head")
+    
+    @{
+        var t = Model.TestList[0];
+        var bdd = t.HasChildren() && t.NodeContext().Get(0).IsBehaviorDrivenType;
+
+        var bddClass = "";
+        if (bdd)
+        {
+            bddClass = "bdd";
+        }
+    }
+
+	<body class='extent @Model.GetReporterConfigurationSetting("theme") default hide-overflow @bddClass'>
+		<div id='theme-selector' alt='Click to toggle theme. To enable by default, use theme configuration.' title='Click to toggle theme. To enable by default, use theme configuration.'>
+			<span><i class='material-icons'>desktop_windows</i></span>
+		</div>
+
+		@Include("nav")
+
+		<!-- container -->
+		<div class='container'>
+
+            @Include("test")
+            @Include("category")
+            @Include("exception")
+            @Include("dashboard")
+
+		</div>
+		<!-- container -->
+
+		<script>
+			var statusGroup = {
+			    passParent: @Model.SessionStatusStats.ParentPass,
+			    failParent: @Model.SessionStatusStats.ParentFail,
+			    fatalParent: @Model.SessionStatusStats.ParentFatal,
+			    errorParent: @Model.SessionStatusStats.ParentError,
+			    warningParent: @Model.SessionStatusStats.ParentWarning,
+			    skipParent: @Model.SessionStatusStats.ParentSkip,
+				
+			    passChild: @Model.SessionStatusStats.ChildPass,
+			    failChild: @Model.SessionStatusStats.ChildFail,
+			    fatalChild: @Model.SessionStatusStats.ChildFatal,
+			    errorChild: @Model.SessionStatusStats.ChildError,
+			    warningChild: @Model.SessionStatusStats.ChildWarning,
+			    skipChild: @Model.SessionStatusStats.ChildSkip,
+			    infoChild: @Model.SessionStatusStats.ChildInfo,
+				
+			    passGrandChild: @Model.SessionStatusStats.GrandChildPass,
+			    failGrandChild: @Model.SessionStatusStats.GrandChildFail,
+			    fatalGrandChild: @Model.SessionStatusStats.GrandChildFatal,
+			    errorGrandChild: @Model.SessionStatusStats.GrandChildError,
+			    warningGrandChild: @Model.SessionStatusStats.GrandChildWarning,
+			    skipGrandChild: @Model.SessionStatusStats.GrandChildSkip,
+			    infoGrandChild: @Model.SessionStatusStats.GrandChildInfo
+			};
+		</script>
+
+		<script src='https://cdn.rawgit.com/anshooarora/extentreports-java/master/dist/js/extent.js' type='text/javascript'></script>
+		
+		@if (!Model.GetReporterConfigurationSetting("chartVisibilityOnOpen").Equals("true"))
+        {
+		    <script type='text/javascript'>
+			    $(document).ready(function() {
+				    $('#test-view-charts').addClass('hide');
+			    });
+		    </script>
+        }
+		
+		@if (!string.IsNullOrEmpty(Model.GetReporterConfigurationSetting("js")))
+        {
+            <script type='text/javascript'>
+			    @Model.GetReporterConfigurationSetting("js")
+            </script>
+        }
+	</body>
+	
+</html>

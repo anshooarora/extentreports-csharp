@@ -85,7 +85,7 @@ namespace AventStack.ExtentReports
 
             if (provider != null)
             {
-
+                evt.ScreenCapture = (ScreenCapture)provider.Media;
             }
 
             return AddLog(evt);

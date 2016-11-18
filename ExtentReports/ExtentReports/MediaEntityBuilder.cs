@@ -8,27 +8,14 @@ namespace AventStack.ExtentReports
     public class MediaEntityBuilder
     {
         private static readonly MediaEntityBuilder _instance = new MediaEntityBuilder();
-
         private static ThreadLocal<Media> _media;
-
-        static MediaEntityBuilder() { }
-
-        private MediaEntityBuilder() { }
-
-        public static MediaEntityBuilder Instance
-        {
-            get
-            {
-                return _instance;
-            }
-        }
 
         public MediaEntityModelProvider Build()
         {
             return new MediaEntityModelProvider(_media.Value);
         }
 
-        public MediaEntityBuilder CreateScreenCaptureFromPath(string path, string title = null)
+        public static MediaEntityBuilder CreateScreenCaptureFromPath(string path, string title = null)
         {
             if (string.IsNullOrEmpty(path))
                 throw new IOException("ScreenCapture path cannot be null or empty.");

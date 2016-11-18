@@ -7,14 +7,16 @@ namespace AventStack.ExtentReports.Model
     [Serializable]
     public class Log : IAddsMedia<Log>, IRunResult
     {
-        public DateTime Timestamp;
-        public string Details;        
-        public int Sequence = 0;
-
-        public Test _parentModel;
-        public ExtentTest _parent;
+        public DateTime Timestamp { get; set; }
         public Status Status { get; set; }
+
+        public int Sequence = 0;
         public IMarkup Markup;
+
+        private Test _parentModel;
+        private ExtentTest _parent;
+        private ScreenCapture _screenCapture;
+        private string _details;
 
         private Log()
         {
@@ -29,6 +31,33 @@ namespace AventStack.ExtentReports.Model
         public Log(ExtentTest extentTest) : this()
         {
             _parent = extentTest;
+        }
+
+        public string Details
+        {
+            get
+            {
+                if (_screenCapture != null)
+                    _details = _details + _screenCapture.Source;
+
+                return _details;
+            }
+            set
+            {
+                _details = value;
+            }
+        }
+
+        public ScreenCapture ScreenCapture
+        {
+            get
+            {
+                return (ScreenCapture)_screenCapture;
+            }
+            set
+            {
+                _screenCapture = value;
+            }
         }
 
         public Test ParentModel

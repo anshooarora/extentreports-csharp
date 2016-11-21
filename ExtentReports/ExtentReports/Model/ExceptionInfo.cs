@@ -8,7 +8,7 @@ namespace AventStack.ExtentReports.Model
         public string StackTrace { get; private set; }
         public string Name { get; private set; }
 
-        private const string _lhs = "<textarea>";
+        private const string _lhs = "<textarea class='code-block'>";
         private const string _rhs = "</textarea>";
 
         public ExceptionInfo(Exception ex)

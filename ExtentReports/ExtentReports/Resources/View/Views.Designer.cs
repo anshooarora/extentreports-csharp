@@ -125,18 +125,27 @@ namespace AventStack.ExtentReports.Resources.View {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &lt;#if exceptionContext?? &amp;&amp; exceptionContext?size !=0&gt;
+        ///   Looks up a localized string similar to @using System.Collections.Generic;
+        ///@using AventStack.ExtentReports;
+        ///
+        ///@{ 
+        ///    var exceptionContext = Model.ExceptionContext;
+        ///
+        ///    List&lt;ExceptionTestContext&gt; context = null;
+        ///    if (exceptionContext != null)
+        ///    {
+        ///        context = Model.ExceptionContext.ExceptionTestContextCollection;
+        ///    }
+        ///}
+        ///
+        ///@if (context != null)
+        ///{
         ///    &lt;div id=&apos;exception-view&apos; class=&apos;view hide&apos;&gt;
         ///
         ///        &lt;section id=&apos;controls&apos;&gt;
         ///            &lt;div class=&apos;controls grey lighten-4&apos;&gt;
         ///                &lt;!-- search --&gt;
-        ///                &lt;div class=&apos;chip transparent&apos; alt=&apos;Search Tests&apos; title=&apos;Search Tests&apos;&gt;
-        ///                    &lt;a href=&quot;#&quot; class=&apos;search-div&apos;&gt;
-        ///                        &lt;i class=&apos;material-icons&apos;&gt;search&lt;/i&gt; Search
-        ///                    &lt;/a&gt;
-        ///
-        ///                    &lt;div class=&apos;input-field left hi [rest of string was truncated]&quot;;.
+        ///            [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string ExceptionView {
             get {
@@ -146,13 +155,13 @@ namespace AventStack.ExtentReports.Resources.View {
         
         /// <summary>
         ///   Looks up a localized string similar to &lt;head&gt;
-        ///    &lt;meta charset=&apos;@Model.ReporterConfigurationSettings.encoding&apos; /&gt;
+        ///    &lt;meta charset=&apos;@Model.GetReporterConfigurationSetting(&quot;encoding&quot;)&apos; /&gt;
         ///    &lt;meta name=&apos;description&apos; content=&apos;&apos; /&gt;
         ///    &lt;meta name=&apos;robots&apos; content=&apos;noodp, noydir&apos; /&gt;
         ///    &lt;meta name=&apos;viewport&apos; content=&apos;width=device-width, initial-scale=1&apos; /&gt;
         ///
-        ///    &lt;link href=&apos;@Model.ReporterConfigurationSettings.protocol://fonts.googleapis.com/css?family=Source+Sans+Pro:400,600&apos; rel=&apos;stylesheet&apos; type=&apos;text/css&apos;&gt;
-        ///    &lt;link href=&quot;@Model.ReporterConfigurationSettings.protocol://fonts.googleapis.com/icon?family=Materia [rest of string was truncated]&quot;;.
+        ///    &lt;link href=&apos;@Model.GetReporterConfigurationSetting(&quot;protocol&quot;)://fonts.googleapis.com/css?family=Source+Sans+Pro:400,600&apos; rel=&apos;stylesheet&apos; type=&apos;text/css&apos;&gt;
+        ///    &lt;link href=&quot;@Model.GetReporterConfigurationSetting(&quot;protocol&quot;)://fonts.googleapis.com/icon [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string Head {
             get {
@@ -181,8 +190,7 @@ namespace AventStack.ExtentReports.Resources.View {
         ///        }
         ///    }
         ///
-        ///	&lt;body class=&apos;extent @Model.ReporterConfigurationSettings.theme default hide-overflow @bddClass&apos;&gt;
-        ///		&lt; [rest of string was truncated]&quot;;.
+        ///	&lt;body class=&apos;extent @Model.GetReporterConfigurationSetting(&quot;theme&quot;) default hide-overflow @bddClass&apos;&gt; [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string Index {
             get {
@@ -216,7 +224,9 @@ namespace AventStack.ExtentReports.Resources.View {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &lt;div id=&apos;test-view&apos; class=&apos;view&apos;&gt;
+        ///   Looks up a localized string similar to @using AventStack.ExtentReports.ViewDefs
+        ///
+        ///&lt;div id=&apos;test-view&apos; class=&apos;view&apos;&gt;
         ///
         ///    &lt;section id=&apos;controls&apos;&gt;
         ///        &lt;div class=&apos;controls grey lighten-4&apos;&gt;
@@ -225,8 +235,7 @@ namespace AventStack.ExtentReports.Resources.View {
         ///                &lt;a class=&apos;dropdown-button tests-toggle&apos; data-activates=&apos;tests-toggle&apos; data-constrainwidth=&apos;true&apos; data-beloworigin=&apos;true&apos; data-hover=&apos;true&apos; href=&apos;#&apos;&gt;
         ///                    &lt;i class=&apos;material-icons&apos;&gt;warning&lt;/i&gt; Status
         ///                &lt;/a&gt;
-        ///                &lt;ul id=&apos;tests-toggle&apos; class=&apos;dropdown-content&apos;&gt;
-        ///   [rest of string was truncated]&quot;;.
+        ///                &lt;ul id= [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string TestView {
             get {

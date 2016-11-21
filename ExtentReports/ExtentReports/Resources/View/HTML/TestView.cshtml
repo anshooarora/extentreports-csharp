@@ -134,7 +134,6 @@
                                                 }
                                             </div>
                                         }
-
                                         <span class='@type.ToLower()-duration right label'>@node.RunDuration</span>
                                         <div class='@type.ToLower()-desc'>
                                             <b>@type</b>
@@ -197,7 +196,7 @@
                                 <div class='test-time-info'>
                                     <span class='label start-time'>@test.StartTime</span>
                                     <span class='label end-time'>@test.EndTime</span>
-                                    <span class='label time-taken grey lighten-1 white-text'>${ test.getRunDuration()?string }</span>
+                                    <span class='label time-taken grey lighten-1 white-text'>@test.RunDuration</span>
                                 </div>
 
                                 if (!string.IsNullOrEmpty(test.Description))
@@ -237,9 +236,6 @@
                                                 <tr>
                                                     <th>Status</th>
                                                     <th>Timestamp</th>
-                                                    <#if test.getLogContext().get(0).stepName??>
-                                                        <th>StepName</th>
-                                                    </#if>
                                                     <th>Details</th>
                                                 </tr>
                                             </thead>

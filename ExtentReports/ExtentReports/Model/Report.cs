@@ -77,7 +77,7 @@ namespace AventStack.ExtentReports.Model
         [MethodImpl(MethodImplOptions.Synchronized)]
         private void CollectRunInfo()
         {
-            if (_testCollection.IsNullOrEmpty())
+            if (!HasTests())
                 return;
 
             _testCollection.ForEach(test => EndTest(test));
@@ -165,8 +165,19 @@ namespace AventStack.ExtentReports.Model
         [MethodImpl(MethodImplOptions.Synchronized)]
         protected void Flush()
         {
+            if (!HasTests())
+                return;
+
             CollectRunInfo();
             NotifyReporters();
+        }
+
+        private bool HasTests()
+        {
+            if (_testCollection.IsNullOrEmpty())
+                return false;
+
+            return true;
         }
 
         [MethodImpl(MethodImplOptions.Synchronized)]

@@ -1,10 +1,6 @@
-﻿using AventStack.ExtentReports.Gherkin.Model;
-using NUnit.Framework;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using NUnit.Framework;
+
+using AventStack.ExtentReports.Gherkin.Model;
 
 namespace AventStack.ExtentReports.Tests.APITests
 {

@@ -50,12 +50,15 @@
     <Compile Include="APITests\BddAttributesTests.cs" />
     <Compile Include="APITests\BddLevelsTests.cs" />
     <Compile Include="APITests\BddWithStepStatusHierarchyTests.cs" />
+    <Compile Include="APITests\BuildsReportWithoutAttachedReporters.cs" />
+    <Compile Include="APITests\BuildsReportWithoutTests.cs" />
     <Compile Include="APITests\NodeAttributesTests.cs" />
     <Compile Include="APITests\NodeSingleLogsStatusTests.cs" />
     <Compile Include="APITests\NodesStatusHierarchyTests.cs" />
     <Compile Include="APITests\NodeWithoutLogs.cs" />
     <Compile Include="APITests\TestAttributesTests.cs" />
     <Compile Include="APITests\TestHasUniqueIdsTests.cs" />
+    <Compile Include="APITests\TestInitializeWithNullValues.cs" />
     <Compile Include="APITests\TestMediaTests.cs" />
     <Compile Include="APITests\TestSingleLogsStatusTests.cs" />
     <Compile Include="APITests\TestStatusHierarchyTests.cs" />

@@ -63,7 +63,7 @@
 			};
 		</script>
 
-		<script src='https://cdn.rawgit.com/anshooarora/extentreports-java/master/dist/js/extent.js' type='text/javascript'></script>
+		<script src='@Model.GetReporterConfigurationSetting("protocol")://cdn.rawgit.com/anshooarora/extentreports-csharp/313d8cbbfec09b22592339f03a2ad0ecfadf17f6/dist/js/extent.js' type='text/javascript'></script>
 		
 		@if (!Model.GetReporterConfigurationSetting("chartVisibilityOnOpen").Equals("true"))
         {

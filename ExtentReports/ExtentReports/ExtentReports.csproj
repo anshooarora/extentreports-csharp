@@ -131,6 +131,11 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>ExtentHtmlReporterSettings.settings</DependentUpon>
     </Compile>
+    <Compile Include="Reporter\Configuration\Defaults\ExtentXReporterSettings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <DependentUpon>ExtentXReporterSettings.settings</DependentUpon>
+    </Compile>
     <Compile Include="Reporter\Configuration\Defaults\IReporterConfigurationSettings.cs" />
     <Compile Include="Reporter\Configuration\ExtentHtmlReporterConfiguration.cs" />
     <Compile Include="Reporter\Configuration\ExtentXReporterConfiguration.cs" />
@@ -162,6 +167,10 @@
     <None Include="Reporter\Configuration\Defaults\ExtentHtmlReporterSettings.settings">
       <Generator>PublicSettingsSingleFileGenerator</Generator>
       <LastGenOutput>ExtentHtmlReporterSettings.Designer.cs</LastGenOutput>
+    </None>
+    <None Include="Reporter\Configuration\Defaults\ExtentXReporterSettings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>ExtentXReporterSettings.Designer.cs</LastGenOutput>
     </None>
     <None Include="Resources\View\HTML\Bdd.cshtml" />
     <None Include="Resources\View\HTML\CategoryView.cshtml" />

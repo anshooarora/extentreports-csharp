@@ -7,13 +7,18 @@ namespace AventStack.ExtentReports.Reporter
 {
     public abstract class AbstractReporter : IExtentReporter
     {
-        public abstract TestAttributeTestContextProvider<Category> CategoryContext { get; set; }
-        public abstract ExceptionTestContextProvider ExceptionContext { get; set; }
-        public abstract SessionStatusStats SessionStatusStats { get; set; }
-        public abstract DateTime StartTime { get; set; }
-        public abstract SystemAttributeContext SystemAttributeContext { get; set; }
-        public abstract List<Test> TestList { get; set; }
-        public abstract List<string> TestRunnerLogs { get; set; }
+        public AbstractReporter()
+        {
+            StartTime = DateTime.Now;
+        }
+
+        public virtual TestAttributeTestContextProvider<Category> CategoryContext { get; set; }
+        public virtual ExceptionTestContextProvider ExceptionContext { get; set; }
+        public virtual SessionStatusStats SessionStatusStats { get; set; }
+        public virtual DateTime StartTime { get; set; }
+        public virtual SystemAttributeContext SystemAttributeContext { get; set; }
+        public virtual List<Test> TestList { get; set; }
+        public virtual List<string> TestRunnerLogs { get; set; }
 
         public abstract void Flush();
         public abstract void LoadConfig(string filePath);

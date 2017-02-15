@@ -12,6 +12,8 @@ using AventStack.ExtentReports.Reporter.Configuration;
 using AventStack.ExtentReports.Configuration;
 using System.Configuration;
 using AventStack.ExtentReports.Reporter.Configuration.Defaults;
+using System.IO;
+using System.Xml.Linq;
 
 namespace AventStack.ExtentReports.Reporter
 {
@@ -96,6 +98,11 @@ namespace AventStack.ExtentReports.Reporter
             }
         }
 
+        public ExtentXReporterConfiguration Configuration()
+        {
+            return _reporterConfig;
+        }
+
         public bool AppendExisting
         {
             get
@@ -110,7 +117,28 @@ namespace AventStack.ExtentReports.Reporter
 
         public override void LoadConfig(string filePath)
         {
-            throw new NotImplementedException();
+            if (!File.Exists(filePath))
+                throw new FileNotFoundException("The file " + filePath + " was not found.");
+
+            var xdoc = XDocument.Load(filePath, LoadOptions.None);
+            if (xdoc == null)
+            {
+                throw new FileLoadException("Unable to configure report with the supplied configuration. Please check the input file and try again.");
+            }
+
+            LoadConfigFileContents(xdoc);
+        }
+
+        private void LoadConfigFileContents(XDocument xdoc)
+        {
+            foreach (var xe in xdoc.Descendants("configuration").First().Elements())
+            {
+                var key = xe.Name.ToString();
+                var value = xe.Value;
+
+                var c = new Config(key, value);
+                _configManager.AddConfig(c);
+            }
         }
 
         public override void Start()

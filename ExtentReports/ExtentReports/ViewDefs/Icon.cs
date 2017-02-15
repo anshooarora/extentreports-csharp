@@ -21,6 +21,8 @@ namespace AventStack.ExtentReports.ViewDefs
                     return "check_circle";
                 case Status.Info:
                     return "info_outline";
+                case Status.Debug:
+                    return "low_priority";
                 default:
                     return "help";
             }

@@ -116,6 +116,7 @@ namespace AventStack.ExtentReports.Reporter
 
         private void AddTemplates()
         {
+            Engine.Razor.AddTemplate("logs", Views.TestRunnerLogs);
             Engine.Razor.AddTemplate("charts", Views.TestViewCharts);
             Engine.Razor.AddTemplate("test", Views.TestView);
             Engine.Razor.AddTemplate("standard", Views.Standard);

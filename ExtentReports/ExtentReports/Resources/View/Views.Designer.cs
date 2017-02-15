@@ -224,6 +224,31 @@ namespace AventStack.ExtentReports.Resources.View {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to @using System.Collections.Generic;
+        ///@using AventStack.ExtentReports;
+        ///
+        ///@{ 
+        ///    var exceptionContext = Model.ExceptionContext;
+        ///
+        ///    List&lt;ExceptionTestContext&gt; context = null;
+        ///    if (exceptionContext != null)
+        ///    {
+        ///        context = Model.ExceptionContext.ExceptionTestContextCollection;
+        ///    }
+        ///}
+        ///
+        ///@if (context != null)
+        ///{
+        ///
+        ///}.
+        /// </summary>
+        internal static string TestRunnerLogs {
+            get {
+                return ResourceManager.GetString("TestRunnerLogs", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to @using AventStack.ExtentReports.ViewDefs
         ///
         ///&lt;div id=&apos;test-view&apos; class=&apos;view&apos;&gt;

@@ -8,5 +8,8 @@
     <Setting Name="reportName" Type="System.String" Scope="Application">
       <Value Profile="(Default)">Default</Value>
     </Setting>
+    <Setting Name="serverUrl" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">http://localhost:1337/</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

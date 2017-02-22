@@ -53,6 +53,10 @@
       <HintPath>..\packages\MongoDB.Driver.Core.2.3.0\lib\net45\MongoDB.Driver.Core.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.9.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="RazorEngine, Version=3.9.0.0, Culture=neutral, PublicKeyToken=9ee697374c7e744a, processorArchitecture=MSIL">
       <HintPath>..\packages\RazorEngine.3.9.0\lib\net45\RazorEngine.dll</HintPath>
       <Private>True</Private>
@@ -60,6 +64,7 @@
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Web" />
     <Reference Include="System.Web.Razor, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.AspNet.Razor.3.0.0\lib\net45\System.Web.Razor.dll</HintPath>
       <Private>True</Private>
@@ -101,7 +106,9 @@
     <Compile Include="MarkupUtils\Table.cs" />
     <Compile Include="MediaEntityBuilder.cs" />
     <Compile Include="MediaEntityModelProvider.cs" />
-    <Compile Include="MediaStorage\HttpMediaManager.cs" />
+    <Compile Include="MediaStorageNS\HttpMediaManager.cs" />
+    <Compile Include="MediaStorageNS\MediaStorage.cs" />
+    <Compile Include="MediaStorageNS\MediaStorageManagerFactory.cs" />
     <Compile Include="Model\AbstractStructure.cs" />
     <Compile Include="Model\Attribute.cs" />
     <Compile Include="Model\Author.cs" />
@@ -176,13 +183,19 @@
     <None Include="Resources\View\HTML\CategoryView.cshtml" />
     <None Include="Resources\View\HTML\DashboardView.cshtml" />
     <None Include="Resources\View\HTML\ExceptionView.cshtml" />
+    <None Include="Resources\View\HTML\ExceptionView1.cshtml" />
+    <None Include="Resources\View\HTML\ExceptionView2.cshtml" />
     <None Include="Resources\View\HTML\Head.cshtml" />
     <None Include="Resources\View\HTML\Nav.cshtml" />
     <None Include="Resources\View\HTML\Standard.cshtml" />
+    <None Include="Resources\View\HTML\TestRunnerLogs.cshtml" />
     <None Include="Resources\View\HTML\TestView.cshtml" />
+    <None Include="Resources\View\HTML\TestView1.cshtml" />
     <None Include="Resources\View\HTML\TestViewCharts.cshtml" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <None Include="Resources\TestRunnerLogs.txt" />
+  </ItemGroup>
   <ItemGroup>
     <None Include="Resources\View\HTML\Index.cshtml" />
   </ItemGroup>

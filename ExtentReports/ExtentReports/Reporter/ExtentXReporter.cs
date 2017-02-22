@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.IO;
+using System.Xml.Linq;
+using System.Configuration;
 
 using MongoDB.Driver;
 using MongoDB.Bson;
@@ -10,10 +13,8 @@ using MongoDB.Bson;
 using AventStack.ExtentReports.Model;
 using AventStack.ExtentReports.Reporter.Configuration;
 using AventStack.ExtentReports.Configuration;
-using System.Configuration;
 using AventStack.ExtentReports.Reporter.Configuration.Defaults;
-using System.IO;
-using System.Xml.Linq;
+using AventStack.ExtentReports.MediaStorageNS;
 
 namespace AventStack.ExtentReports.Reporter
 {
@@ -40,10 +41,9 @@ namespace AventStack.ExtentReports.Reporter
         private IMongoCollection<BsonDocument> _categoryTestsTestCategories;
         private IMongoCollection<BsonDocument> _authorTestsTestAuthors;
 
+        private MediaStorage _media;
         private ExtentXReporterConfiguration _reporterConfig;
         private ConfigManager _configManager;
-
-        private List<Test> _testModelCollection;
 
         private Dictionary<string, ObjectId> _categoryNameObjectIdCollection;
         private Dictionary<string, ObjectId> _exceptionNameObjectIdCollection;
@@ -161,7 +161,6 @@ namespace AventStack.ExtentReports.Reporter
             _authorTestsTestAuthors = _db.GetCollection<BsonDocument>("author_tests__test_authors");
 
             SetupProject();
-            SetupReport();
         }
 
         private void SetupProject()
@@ -186,14 +185,16 @@ namespace AventStack.ExtentReports.Reporter
                 _projectCollection.InsertOne(document);
                 _projectId = document["_id"].AsObjectId;
             }
+
+            SetupReport(projectName);
         }
 
-        private void SetupReport()
+        private void SetupReport(string projectName)
         {
             string reportName = _configManager.GetValue("reportName");
 
             if (string.IsNullOrEmpty(reportName))
-                reportName = DateTime.Now.ToString();
+                reportName = "[" + projectName + "] " + DateTime.Now.ToString();
 
             BsonDocument document;
 
@@ -250,6 +251,7 @@ namespace AventStack.ExtentReports.Reporter
                 .Set("warningParentLength", SessionStatusStats.ParentWarning)
                 .Set("skipParentLength", SessionStatusStats.ParentSkip)
                 .Set("exceptionsParentLength", SessionStatusStats.ChildExceptions)
+
                 .Set("childLength", SessionStatusStats.ChildCount)
                 .Set("passChildLength", SessionStatusStats.ChildPass)
                 .Set("failChildLength", SessionStatusStats.ChildFail)
@@ -259,6 +261,7 @@ namespace AventStack.ExtentReports.Reporter
                 .Set("skipChildLength", SessionStatusStats.ChildSkip)
                 .Set("infoChildLength", SessionStatusStats.ChildInfo)
                 .Set("exceptionsChildLength", SessionStatusStats.ChildExceptions)
+
                 .Set("grandChildLength", SessionStatusStats.GrandChildCount)
                 .Set("passGrandChildLength", SessionStatusStats.GrandChildPass)
                 .Set("failGrandChildLength", SessionStatusStats.GrandChildFail)
@@ -269,6 +272,154 @@ namespace AventStack.ExtentReports.Reporter
                 .Set("exceptionsGrandChildLength", SessionStatusStats.GrandChildExceptions);
 
             _reportCollection.UpdateOne(filter, update);
+        }
+
+        public override void OnTestStarted(Test test)
+        {
+            var document = new BsonDocument
+            {
+                { "project", _projectId },
+                { "report", _reportId },
+                { "level", test.Level },
+                { "name", test.Name },
+                { "status", test.Status.ToString().ToLower() },
+                { "description", test.Description == null ? "" : test.Description },
+                { "startTime", test.StartTime },
+                { "endTime", test.EndTime },
+                { "bdd", test.IsBehaviorDrivenType },
+                { "childNodesLength", test.NodeContext().Count }
+            };
+
+            if (test.IsBehaviorDrivenType)
+                document.Add("bddType", test.BehaviorDrivenType.ToString());
+
+            _testCollection.InsertOne(document);
+
+            test.ObjectId = document["_id"].AsObjectId;
+        }
+
+        public override void OnNodeStarted(Test node)
+        {
+            var document = new BsonDocument
+            {
+                { "parent", node.Parent.ObjectId },
+                { "parentName", node.Parent.Name },
+                { "project", _projectId },
+                { "report", _reportId },
+                { "level", node.Level },
+                { "name", node.Name },
+                { "status", node.Status.ToString().ToLower() },
+                { "description", node.Description == null ? "" : node.Description },
+                { "startTime", node.StartTime },
+                { "endTime", node.EndTime },
+                { "bdd", node.IsBehaviorDrivenType },
+                { "childNodesLength", node.NodeContext().Count }
+            };
+
+            if (node.IsBehaviorDrivenType)
+                document.Add("bddType", node.BehaviorDrivenType.ToString());
+
+            _testCollection.InsertOne(document);
+
+            node.ObjectId = document["_id"].AsObjectId;
+
+            UpdateTestInfoWithNodeDetails(node.Parent);
+        }
+
+        private void UpdateTestInfoWithNodeDetails(Test test)
+        {
+            var filter = Builders<BsonDocument>.Filter.Eq("_id", test.ObjectId);
+            var update = Builders<BsonDocument>.Update.Set("childNodesLength", test.NodeContext().Count);
+
+            _testCollection.UpdateOne(filter, update);
+        }
+
+        public override void OnLogAdded(Test test, Log log)
+        {
+            var document = new BsonDocument
+            {
+                { "test", test.ObjectId },
+                { "project", _projectId },
+                { "report", _reportId },
+                { "testName", test.Name },
+                { "sequence", log.Sequence },
+                { "status", log.Status.ToString().ToLower() },
+                { "timestamp", log.Timestamp },
+                { "details", log.Details }
+            };
+
+            _logCollection.InsertOne(document);
+
+            if (test.HasException())
+            {
+                if (_exceptionNameObjectIdCollection == null)
+                    _exceptionNameObjectIdCollection = new Dictionary<string, ObjectId>();
+
+                var ex = test.ExceptionInfo;
+
+                document = new BsonDocument
+                {
+                    { "report", _reportId },
+                    { "project", _projectId },
+                    { "name", ex.Name }
+                };
+
+                var findResult = _exceptionCollection.Find(document).FirstOrDefault();
+
+                if (!_exceptionNameObjectIdCollection.ContainsKey(ex.Name))
+                {
+                    if (findResult != null)
+                    {
+                        _exceptionNameObjectIdCollection.Add(ex.Name, findResult["_id"].AsObjectId);
+                    }
+                    else
+                    {
+                        document = new BsonDocument
+                    {
+                        { "project", _projectId },
+                        { "report", _reportId },
+                        { "name", ex.Name },
+                        { "stacktrace", ex.StackTrace },
+                        { "testCount", 0 }
+                    };
+
+                        _exceptionCollection.InsertOne(document);
+
+                        var exId = document["_id"].AsObjectId;
+
+                        document = new BsonDocument
+                        {
+                            { "_id", exId }
+                        };
+                        findResult = _exceptionCollection.Find(document).FirstOrDefault();
+
+                        _exceptionNameObjectIdCollection.Add(ex.Name, exId);
+                    }
+                }
+
+                var testCount = ((int)(findResult["testCount"])) + 1;
+                var filter = Builders<BsonDocument>.Filter.Eq("_id", findResult["_id"].AsObjectId);
+                var update = Builders<BsonDocument>.Update.Set("testCount", testCount);
+
+                _exceptionCollection.UpdateOne(filter, update);
+            }
+
+            EndTestRecursive(test);
+        }
+
+        private void EndTestRecursive(Test test)
+        {
+            var filter = Builders<BsonDocument>.Filter.Eq("_id", test.ObjectId);
+            var update = Builders<BsonDocument>.Update
+                .Set("status", test.Status.ToString().ToLower())
+                .Set("endTime", test.EndTime)
+                .Set("duration", test.RunDuration.ToString())
+                .Set("categorized", test.HasCategory());
+
+            _testCollection.UpdateOne(filter, update);
+
+            if (test.Level > 0)
+                EndTestRecursive(test.Parent);
         }
 
         public override void OnAuthorAssigned(Test test, Author author)
@@ -357,7 +508,26 @@ namespace AventStack.ExtentReports.Reporter
             _categoryTestsTestCategories.InsertOne(document);
         }
 
-        public override void OnLogAdded(Test test, Log log)
+        public override void OnScreenCaptureAdded(Test test, ScreenCapture screenCapture)
+        {
+            StoreURL();
+            screenCapture.ReportObjectId = _reportId;
+
+            CreateMedia(test, screenCapture);
+            InitMedia();
+            _media.StoreMedia(screenCapture);
+        }
+
+        private void StoreURL()
+        {
+            if (_url == null)
+                _url = _configManager.GetValue("serverUrl");
+
+            if (string.IsNullOrEmpty(_url))
+                throw new IOException("Server URL cannot be null, use ExtentXReporter.Configuration().ServerURL to specify where ExtentX is running.");
+        }
+
+        private void CreateMedia(Test test, Media media)
         {
             var document = new BsonDocument
             {
@@ -365,98 +535,23 @@ namespace AventStack.ExtentReports.Reporter
                 { "project", _projectId },
                 { "report", _reportId },
                 { "testName", test.Name },
-                { "sequence", log.Sequence },
-                { "status", log.Status.ToString().ToLower() },
-                { "timestamp", log.Timestamp },
-                { "details", log.Details }
+                { "sequence", media.Sequence },
+                { "mediaType", media.MediaType.ToString().ToLower() }
             };
 
-            _logCollection.InsertOne(document);
+            _mediaCollection.InsertOne(document);
 
-            if (test.HasException())
+            var id = document["_id"].AsObjectId;
+            media.ObjectId = id;
+        }
+
+        private void InitMedia()
+        {
+            if (_media == null)
             {
-
+                _media = new MediaStorageManagerFactory().GetManager("http");
+                _media.Init(_url);
             }
-        }
-
-        private void EndTestRecursive(Test test)
-        {
-            var filter = Builders<BsonDocument>.Filter.Eq("_id", test.ObjectId);
-            var update = Builders<BsonDocument>.Update
-                .Set("status", test.Status.ToString().ToLower())
-                .Set("endTime", test.EndTime)
-                .Set("duration", test.RunDuration.ToString())
-                .Set("categorized", test.HasCategory());
-
-            _testCollection.UpdateOne(filter, update);
-
-            if (test.Level > 0)
-                EndTestRecursive(test.Parent);
-        }
-
-        public override void OnScreenCaptureAdded(Test test, ScreenCapture screenCapture)
-        {
-            throw new NotImplementedException();
-        }
-
-        public override void OnTestStarted(Test test)
-        {
-            var document = new BsonDocument
-            {
-                { "project", _projectId },
-                { "report", _reportId },
-                { "level", test.Level },
-                { "name", test.Name },
-                { "status", test.Status.ToString().ToLower() },
-                { "description", test.Description == null ? "" : test.Description },
-                { "startTime", test.StartTime },
-                { "endTime", test.EndTime },
-                { "bdd", test.IsBehaviorDrivenType },
-                { "childNodesLength", test.NodeContext().Count }
-            };
-
-            if (test.IsBehaviorDrivenType)
-                document.Add("bddType", test.BehaviorDrivenType.ToString());
-
-            _testCollection.InsertOne(document);
-
-            test.ObjectId = document["_id"].AsObjectId;
-        }
-
-        public override void OnNodeStarted(Test node)
-        {
-            var document = new BsonDocument
-            {
-                { "parent", node.Parent.ObjectId },
-                { "parentName", node.Parent.Name },
-                { "project", _projectId },
-                { "report", _reportId },
-                { "level", node.Level },
-                { "name", node.Name },
-                { "status", node.Status.ToString().ToLower() },
-                { "description", node.Description == null ? "" : node.Description },
-                { "startTime", node.StartTime },
-                { "endTime", node.EndTime },
-                { "bdd", node.IsBehaviorDrivenType },
-                { "childNodesLength", node.NodeContext().Count }
-            };
-
-            if (node.IsBehaviorDrivenType)
-                document.Add("bddType", node.BehaviorDrivenType.ToString());
-
-            _testCollection.InsertOne(document);
-
-            node.ObjectId = document["_id"].AsObjectId;
-
-            UpdateTestInfoWithNodeDetails(node.Parent);
-        }
-
-        private void UpdateTestInfoWithNodeDetails(Test test)
-        {
-            var filter = Builders<BsonDocument>.Filter.Eq("_id", test.ObjectId);
-            var update = Builders<BsonDocument>.Update.Set("childNodesLength", test.NodeContext().Count);
-
-            _testCollection.UpdateOne(filter, update);
         }
     }
 }

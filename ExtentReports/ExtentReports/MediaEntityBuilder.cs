@@ -15,6 +15,12 @@ namespace AventStack.ExtentReports
             return new MediaEntityModelProvider(_media.Value);
         }
 
+        /// <summary>
+        /// Adds a snapshot to the test or log with title
+        /// </summary>
+        /// <param name="path">Image path</param>
+        /// <param name="title">Image title</param>
+        /// <returns>A <see cref="MediaEntityBuilder"/> object</returns>
         public static MediaEntityBuilder CreateScreenCaptureFromPath(string path, string title = null)
         {
             if (string.IsNullOrEmpty(path))

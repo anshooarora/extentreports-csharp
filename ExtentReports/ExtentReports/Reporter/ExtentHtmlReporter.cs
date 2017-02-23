@@ -20,6 +20,10 @@ using AventStack.ExtentReports.Reporter.Configuration;
 
 namespace AventStack.ExtentReports.Reporter
 {
+    /// <summary>
+    /// The ExtentHtmlReporter creates a rich standalone HTML file. It allows several configuration options
+    /// via the <code>Configuration()</code> method.
+    /// </summary>
     public class ExtentHtmlReporter : BasicFileReporter, ReportAppendable
     {
         public bool AppendExisting { get; set; }

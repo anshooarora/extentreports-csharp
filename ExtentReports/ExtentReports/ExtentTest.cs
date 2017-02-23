@@ -7,9 +7,15 @@ using AventStack.ExtentReports.MarkupUtils;
 
 namespace AventStack.ExtentReports
 {
+    /// <summary>
+    /// Defines a test. You can add logs, snapshots, assign author and categories to a test and its children.
+    /// </summary>
     [Serializable]
     public class ExtentTest : IAddsMedia<ExtentTest>, IRunResult
     {
+        /// <summary>
+        /// Provides the current run status of the test or node
+        /// </summary>
         public Status Status
         {
             get
@@ -40,6 +46,12 @@ namespace AventStack.ExtentReports
             : this(extent, null, testName, description)
         { }
 
+        /// <summary>
+        /// Creates a node with description
+        /// </summary>
+        /// <param name="name">Node name</param>
+        /// <param name="description">A short description</param>
+        /// <returns>A <see cref="ExtentTest"/> object</returns>
         public ExtentTest CreateNode(string name, string description = null)
         {
             var node = new ExtentTest(_extent, name, description);
@@ -48,6 +60,13 @@ namespace AventStack.ExtentReports
             return node;
         }
 
+        /// <summary>
+        /// Creates a BDD-style node with description representing one of the <see cref="IGherkinFormatterModel"/> 
+        /// </summary>
+        /// <typeparam name="T">A <see cref="IGherkinFormatterModel"/> type</typeparam>
+        /// <param name="name">Node name</param>
+        /// <param name="description">A short description</param>
+        /// <returns>A <see cref="ExtentTest"/> object</returns>
         public ExtentTest CreateNode<T>(string name, string description = null) where T : IGherkinFormatterModel
         {
             Type type = typeof(T);
@@ -60,6 +79,27 @@ namespace AventStack.ExtentReports
             return node;
         }
 
+        /// <summary>
+        /// Creates a BDD-style node with description using name of the Gherkin model such as:
+        /// 
+        /// <list type="bullet">
+        /// <item><see cref="Feature"/></item>
+        /// <item><see cref="Background"/></item>
+        /// <item><see cref="Scenario"/></item>
+        /// <item><see cref="Given"/></item>
+        /// <item><see cref="When"/></item>
+        /// <item><see cref="Then"/></item>
+        /// <item><see cref="And"/></item>
+        /// </list>
+        /// 
+        /// <code>
+        /// test.CreateNode(new GherkinKeyword("Feature"), "Name", "Description");
+        /// </code>
+        /// </summary>
+        /// <param name="gherkinKeyword">Name of the <see cref="GherkinKeyword"/></param>
+        /// <param name="name">Node name</param>
+        /// <param name="description">A short description</param>
+        /// <returns>A <see cref="ExtentTest"/> object</returns>
         public ExtentTest CreateNode(GherkinKeyword gherkinKeyword, string name, string description = null)
         {
             var node = CreateNode(name, description);
@@ -79,6 +119,17 @@ namespace AventStack.ExtentReports
             _extent.AddNode(extentNode.GetModel());
         }
 
+        /// <summary>
+        /// Logs an event with <see cref="Status"/>, details and a media object: <see cref="ScreenCapture"/>
+        /// 
+        /// <code>
+        /// test.Log(Status.Fail, "details", MediaEntityBuilder.CreateScreenCaptureFromPath("screen.png").Build());
+        /// </code>
+        /// </summary>
+        /// <param name="status"><see cref="Status"/></param>
+        /// <param name="details">Log details</param>
+        /// <param name="provider">A <see cref="MediaEntityModelProvider"/> object</param>
+        /// <returns>A <see cref="ExtentTest"/> object</returns>
         public ExtentTest Log(Status status, string details, MediaEntityModelProvider provider = null)
         {
             Log evt = CreateLog(status, details);
@@ -91,6 +142,17 @@ namespace AventStack.ExtentReports
             return AddLog(evt);
         }
 
+        /// <summary>
+        /// Logs an event with <see cref="Status"/>, an exception and a media object: <see cref="ScreenCapture"/>
+        /// 
+        /// <code>
+        /// test.Log(Status.Fail, exception, MediaEntityBuilder.CreateScreenCaptureFromPath("screen.png").Build());
+        /// </code>
+        /// </summary>
+        /// <param name="status"><see cref="Status"/></param>
+        /// <param name="ex"><see cref="Exception"/></param>
+        /// <param name="provider">A <see cref="MediaEntityModelProvider"/> object</param>
+        /// <returns>A <see cref="ExtentTest"/> object</returns>
         public ExtentTest Log(Status status, Exception ex, MediaEntityModelProvider provider = null)
         {
             ExceptionInfo exInfo = new ExceptionInfo(ex);
@@ -99,6 +161,18 @@ namespace AventStack.ExtentReports
             return Log(status, exInfo.StackTrace, provider);
         }
 
+        /// <summary>
+        /// Logs an event with <see cref="Status"/> and custom <see cref="IMarkup"/> such as:
+        /// 
+        /// <list type="bullet">
+        /// <item>CodeBlock</item>
+        /// <item>Label</item>
+        /// <item>Table</item>
+        /// </list>
+        /// </summary>
+        /// <param name="status"></param>
+        /// <param name="markup"></param>
+        /// <returns>A <see cref="ExtentTest"/> object</returns>
         public ExtentTest Log(Status status, IMarkup markup)
         {
             string details = markup.GetMarkup();
@@ -127,127 +201,268 @@ namespace AventStack.ExtentReports
             return evt;
         }
 
+        /// <summary>
+        /// Logs an <see cref="Status.Info"/> event with details and a media object <see cref="ScreenCapture"/>
+        /// </summary>
+        /// <param name="details">Details</param>
+        /// <param name="provider">A <see cref="MediaEntityModelProvider"/> object</param>
+        /// <returns>A <see cref="ExtentTest"/> object</returns>
         public ExtentTest Info(string details, MediaEntityModelProvider provider = null)
         {
             Log(Status.Info, details, provider);
             return this;
         }
 
+        /// <summary>
+        /// Logs an <see cref="Status.Info"/> event with an exception and a media object <see cref="ScreenCapture"/>
+        /// </summary>
+        /// <param name="ex"><see cref="Exception"/></param>
+        /// <param name="provider">A <see cref="MediaEntityModelProvider"/> object</param>
+        /// <returns>A <see cref="ExtentTest"/> object</returns>
         public ExtentTest Info(Exception ex, MediaEntityModelProvider provider = null)
         {
             return Log(Status.Info, ex, provider);
         }
 
+        /// <summary>
+        /// Logs an <see cref="Status.Info"/> event with <see cref="IMarkup"/>
+        /// </summary>
+        /// <param name="m"><see cref="IMarkup"/></param>
+        /// <returns>A <see cref="ExtentTest"/> object</returns>
         public ExtentTest Info(IMarkup m)
         {
             return Log(Status.Info, m);
         }
 
+        /// <summary>
+        /// Logs an <see cref="Status.Pass"/> event with details and a media object <see cref="ScreenCapture"/>
+        /// </summary>
+        /// <param name="details">Details</param>
+        /// <param name="provider">A <see cref="MediaEntityModelProvider"/> object</param>
+        /// <returns>A <see cref="ExtentTest"/> object</returns>
         public ExtentTest Pass(string details, MediaEntityModelProvider provider = null)
         {
             return Log(Status.Pass, details, provider);
         }
 
+        /// <summary>
+        /// Logs an <see cref="Status.Pass"/> event with an exception and a media object <see cref="ScreenCapture"/>
+        /// </summary>
+        /// <param name="ex"><see cref="Exception"/></param>
+        /// <param name="provider">A <see cref="MediaEntityModelProvider"/> object</param>
+        /// <returns>A <see cref="ExtentTest"/> object</returns>
         public ExtentTest Pass(Exception ex, MediaEntityModelProvider provider = null)
         {
             return Log(Status.Pass, ex, provider);
         }
 
+        /// <summary>
+        /// Logs an <see cref="Status.Pass"/> event with <see cref="IMarkup"/>
+        /// </summary>
+        /// <param name="m"><see cref="IMarkup"/></param>
+        /// <returns>A <see cref="ExtentTest"/> object</returns>
         public ExtentTest Pass(IMarkup m)
         {
             return Log(Status.Pass, m);
         }
 
+        /// <summary>
+        /// Logs an <see cref="Status.Fail"/> event with details and a media object <see cref="ScreenCapture"/>
+        /// </summary>
+        /// <param name="details">Details</param>
+        /// <param name="provider">A <see cref="MediaEntityModelProvider"/> object</param>
+        /// <returns>A <see cref="ExtentTest"/> object</returns>
         public ExtentTest Fail(string details, MediaEntityModelProvider provider = null)
         {
             return Log(Status.Fail, details, provider);
         }
 
+        /// <summary>
+        /// Logs an <see cref="Status.Fail"/> event with an exception and a media object <see cref="ScreenCapture"/>
+        /// </summary>
+        /// <param name="ex"><see cref="Exception"/></param>
+        /// <param name="provider">A <see cref="MediaEntityModelProvider"/> object</param>
+        /// <returns>A <see cref="ExtentTest"/> object</returns>
         public ExtentTest Fail(Exception ex, MediaEntityModelProvider provider = null)
         {
             return Log(Status.Fail, ex, provider);
         }
 
+        /// <summary>
+        /// Logs an <see cref="Status.Fail"/> event with <see cref="IMarkup"/>
+        /// </summary>
+        /// <param name="m"><see cref="IMarkup"/></param>
+        /// <returns>A <see cref="ExtentTest"/> object</returns>
         public ExtentTest Fail(IMarkup m)
         {
             return Log(Status.Fail, m);
         }
 
+        /// <summary>
+        /// Logs an <see cref="Status.Fatal"/> event with details and a media object <see cref="ScreenCapture"/>
+        /// </summary>
+        /// <param name="details">Details</param>
+        /// <param name="provider">A <see cref="MediaEntityModelProvider"/> object</param>
+        /// <returns>A <see cref="ExtentTest"/> object</returns>
         public ExtentTest Fatal(string details, MediaEntityModelProvider provider = null)
         {
             return Log(Status.Fatal, details, provider);
         }
 
+        /// <summary>
+        /// Logs an <see cref="Status.Fatal"/> event with an exception and a media object <see cref="ScreenCapture"/>
+        /// </summary>
+        /// <param name="ex"><see cref="Exception"/></param>
+        /// <param name="provider">A <see cref="MediaEntityModelProvider"/> object</param>
+        /// <returns>A <see cref="ExtentTest"/> object</returns>
         public ExtentTest Fatal(Exception ex, MediaEntityModelProvider provider = null)
         {
             return Log(Status.Fatal, ex, provider);
         }
 
+        /// <summary>
+        /// Logs an <see cref="Status.Fatal"/> event with <see cref="IMarkup"/>
+        /// </summary>
+        /// <param name="m"><see cref="IMarkup"/></param>
+        /// <returns>A <see cref="ExtentTest"/> object</returns>
         public ExtentTest Fatal(IMarkup m)
         {
             return Log(Status.Fatal, m);
         }
 
+        /// <summary>
+        /// Logs an <see cref="Status.Warning"/> event with details and a media object <see cref="ScreenCapture"/>
+        /// </summary>
+        /// <param name="details">Details</param>
+        /// <param name="provider">A <see cref="MediaEntityModelProvider"/> object</param>
+        /// <returns>A <see cref="ExtentTest"/> object</returns>
         public ExtentTest Warning(string details, MediaEntityModelProvider provider = null)
         {
             return Log(Status.Warning, details, provider);
         }
 
+        /// <summary>
+        /// Logs an <see cref="Status.Warning"/> event with an exception and a media object <see cref="ScreenCapture"/>
+        /// </summary>
+        /// <param name="ex"><see cref="Exception"/></param>
+        /// <param name="provider">A <see cref="MediaEntityModelProvider"/> object</param>
+        /// <returns>A <see cref="ExtentTest"/> object</returns>
         public ExtentTest Warning(Exception ex, MediaEntityModelProvider provider = null)
         {
             return Log(Status.Warning, ex, provider);
         }
 
+        /// <summary>
+        /// Logs an <see cref="Status.Warning"/> event with <see cref="IMarkup"/>
+        /// </summary>
+        /// <param name="m"><see cref="IMarkup"/></param>
+        /// <returns>A <see cref="ExtentTest"/> object</returns>
         public ExtentTest Warning(IMarkup m)
         {
             return Log(Status.Warning, m);
         }
 
+        /// <summary>
+        /// Logs an <see cref="Status.Error"/> event with details and a media object <see cref="ScreenCapture"/>
+        /// </summary>
+        /// <param name="details">Details</param>
+        /// <param name="provider">A <see cref="MediaEntityModelProvider"/> object</param>
+        /// <returns>A <see cref="ExtentTest"/> object</returns>
         public ExtentTest Error(string details, MediaEntityModelProvider provider = null)
         {
             return Log(Status.Error, details, provider);
         }
 
+        /// <summary>
+        /// Logs an <see cref="Status.Error"/> event with an exception and a media object <see cref="ScreenCapture"/>
+        /// </summary>
+        /// <param name="ex"><see cref="Exception"/></param>
+        /// <param name="provider">A <see cref="MediaEntityModelProvider"/> object</param>
+        /// <returns>A <see cref="ExtentTest"/> object</returns>
         public ExtentTest Error(Exception ex, MediaEntityModelProvider provider = null)
         {
             return Log(Status.Error, ex, provider);
         }
 
+        /// <summary>
+        /// Logs an <see cref="Status.Error"/> event with <see cref="IMarkup"/>
+        /// </summary>
+        /// <param name="m"><see cref="IMarkup"/></param>
+        /// <returns>A <see cref="ExtentTest"/> object</returns>
         public ExtentTest Error(IMarkup m)
         {
             return Log(Status.Error, m);
         }
 
+        /// <summary>
+        /// Logs an <see cref="Status.Skip"/> event with details and a media object <see cref="ScreenCapture"/>
+        /// </summary>
+        /// <param name="details">Details</param>
+        /// <param name="provider">A <see cref="MediaEntityModelProvider"/> object</param>
+        /// <returns>A <see cref="ExtentTest"/> object</returns>
         public ExtentTest Skip(string details, MediaEntityModelProvider provider = null)
         {
             return Log(Status.Skip, details, provider);
         }
 
+        /// <summary>
+        /// Logs an <see cref="Status.Skip"/> event with an exception and a media object <see cref="ScreenCapture"/>
+        /// </summary>
+        /// <param name="ex"><see cref="Exception"/></param>
+        /// <param name="provider">A <see cref="MediaEntityModelProvider"/> object</param>
+        /// <returns>A <see cref="ExtentTest"/> object</returns>
         public ExtentTest Skip(Exception ex, MediaEntityModelProvider provider = null)
         {
             return Log(Status.Skip, ex, provider);
         }
 
+        /// <summary>
+        /// Logs an <see cref="Status.Skip"/> event with <see cref="IMarkup"/>
+        /// </summary>
+        /// <param name="m"><see cref="IMarkup"/></param>
+        /// <returns>A <see cref="ExtentTest"/> object</returns>
         public ExtentTest Skip(IMarkup m)
         {
             return Log(Status.Skip, m);
         }
 
-        public ExtentTest debug(string details, MediaEntityModelProvider provider = null)
+        /// <summary>
+        /// Logs an <see cref="Status.Debug"/> event with details and a media object <see cref="ScreenCapture"/>
+        /// </summary>
+        /// <param name="details">Details</param>
+        /// <param name="provider">A <see cref="MediaEntityModelProvider"/> object</param>
+        /// <returns>A <see cref="ExtentTest"/> object</returns>
+        public ExtentTest Debug(string details, MediaEntityModelProvider provider = null)
         {
             return Log(Status.Debug, details, provider);
         }
 
-        public ExtentTest debug(Exception ex, MediaEntityModelProvider provider = null)
+        /// <summary>
+        /// Logs an <see cref="Status.Debug"/> event with an exception and a media object <see cref="ScreenCapture"/>
+        /// </summary>
+        /// <param name="ex"><see cref="Exception"/></param>
+        /// <param name="provider">A <see cref="MediaEntityModelProvider"/> object</param>
+        /// <returns>A <see cref="ExtentTest"/> object</returns>
+        public ExtentTest Debug(Exception ex, MediaEntityModelProvider provider = null)
         {
             return Log(Status.Debug, ex, provider);
         }
 
-        public ExtentTest debug(IMarkup m)
+        /// <summary>
+        /// Logs an <see cref="Status.Debug"/> event with <see cref="IMarkup"/>
+        /// </summary>
+        /// <param name="m"><see cref="IMarkup"/></param>
+        /// <returns>A <see cref="ExtentTest"/> object</returns>
+        public ExtentTest Debug(IMarkup m)
         {
             return Log(Status.Debug, m);
         }
 
+        /// <summary>
+        /// Assigns a category or group
+        /// </summary>
+        /// <param name="category"><see cref="Category"/></param>
+        /// <returns>A <see cref="ExtentTest"/> object</returns>
         public ExtentTest AssignCategory(params string[] category)
         {
             if (category == null || category.Length == 0)
@@ -264,6 +479,11 @@ namespace AventStack.ExtentReports
             return this;
         }
 
+        /// <summary>
+        /// Assigns an author
+        /// </summary>
+        /// <param name="author"><see cref="Author"/></param>
+        /// <returns>A <see cref="ExtentTest"/> object</returns>
         public ExtentTest AssignAuthor(params string[] author)
         {
             if (author == null || author.Length == 0)
@@ -280,6 +500,12 @@ namespace AventStack.ExtentReports
             return this;
         }
 
+        /// <summary>
+        /// Adds a snapshot to the test or log with title
+        /// </summary>
+        /// <param name="path">Image path</param>
+        /// <param name="title">Image title</param>
+        /// <returns>A <see cref="ExtentTest"/> object</returns>
         public ExtentTest AddScreenCaptureFromPath(string path, string title = null)
         {
             ScreenCapture sc = new ScreenCapture();
@@ -300,6 +526,10 @@ namespace AventStack.ExtentReports
             return this;
         }
 
+        /// <summary>
+        /// Returns the underlying test which controls the internal model
+        /// </summary>
+        /// <returns><see cref="Test"/></returns>
         public Test GetModel()
         {
             return _test;

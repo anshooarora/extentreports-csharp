@@ -5,6 +5,19 @@ using AventStack.ExtentReports.Gherkin.Model;
 
 namespace AventStack.ExtentReports
 {
+    /// <summary>
+    /// Allows <see cref="IGherkinFormatterModel"/> to be returned by using a name, from the below gherkin model classes:
+    /// 
+    /// <list type="bullet">
+    /// <item><see cref="Feature"/></item>
+    /// <item><see cref="Background"/></item>
+    /// <item><see cref="Scenario"/></item>
+    /// <item><see cref="Given"/></item>
+    /// <item><see cref="When"/></item>
+    /// <item><see cref="Then"/></item>
+    /// <item><see cref="And"/></item>
+    /// </list>
+    /// </summary>
     public class GherkinKeyword
     {
         private IGherkinFormatterModel _model;

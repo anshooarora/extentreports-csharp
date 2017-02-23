@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.IO;
 using System.Xml.Linq;
 using System.Configuration;
@@ -18,6 +16,10 @@ using AventStack.ExtentReports.MediaStorageNS;
 
 namespace AventStack.ExtentReports.Reporter
 {
+    /// <summary>
+    /// ExtentXReporter is a NoSQL database reporter (MongoDB by default), which updates information in
+    /// the database which is then used by the ExtentX server to display in-depth analysis. 
+    /// </summary>
     public class ExtentXReporter : AbstractReporter, ReportAppendable
     {
         private const string DEFAULT_PROJECT_NAME = "Default";

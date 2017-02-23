@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("ExtentReports")]
+[assembly: AssemblyTitle("ExtentReports Community")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("AventStack")]
-[assembly: AssemblyProduct("ExtentReports")]
+[assembly: AssemblyProduct("ExtentReports Community")]
 [assembly: AssemblyCopyright("Copyright © AventStack 2016")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]

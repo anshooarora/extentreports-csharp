@@ -20,11 +20,11 @@ namespace AventStack.ExtentReports
 
             if (context != null && context.Count() > 0)
             {
-                if (context.First().TestCollection.Where(x => x.TestId == test.TestId).Count() > 0)
+                if (context.First().TestCollection.Where(x => x.TestId == test.TestId).Count() == 0)
                 {
-                    return;
+                    context.First().TestCollection.Add(test);
                 }
-                context.First().TestCollection.Add(test);
+                context.First().RefreshTestStatusCounts();
             }
             else
             {

@@ -27,11 +27,22 @@ namespace AventStack.ExtentReports
             if (TestCollection == null)
                 TestCollection = new List<Test>();
 
-            Passed += test.Status == Status.Pass ? 1 : 0;
-            Failed += test.Status == Status.Fail ? 1 : 0;
-            Others += test.Status != Status.Pass && test.Status != Status.Fail ? 1 : 0;
-
+            updateTestStatusCounts(test);
             TestCollection.Add(test);
+        }
+
+        private void updateTestStatusCounts(Test test)
+        {
+            Passed += test.Status == Status.Pass ? 1 : 0;
+            Failed += test.Status == Status.Fail || test.Status == Status.Fatal ? 1 : 0;
+            Others += test.Status != Status.Pass && test.Status != Status.Fail ? 1 : 0;
+        }
+
+        public void RefreshTestStatusCounts()
+        {
+            Passed = Failed = Others = 0;
+
+            TestCollection.ForEach(x => updateTestStatusCounts(x));
         }
     }
 }

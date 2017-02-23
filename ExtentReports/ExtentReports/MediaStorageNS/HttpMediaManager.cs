@@ -23,7 +23,6 @@ namespace AventStack.ExtentReports.MediaStorageNS
         private string _csrf;
         private string _host;
         private string _cookie;
-        private CookieCollection _cookies;
 
         public void Init(string host)
         {
@@ -61,14 +60,7 @@ namespace AventStack.ExtentReports.MediaStorageNS
                 dynamic result = JsonConvert.DeserializeObject(responseText);
                 _csrf = result._csrf.Value;
 
-                _cookies = res.Cookies;
                 _cookie = res.Headers["Set-Cookie"];
-                
-                if (_cookie.IndexOf(';') > 0)
-                {
-                    var temp = _cookie.Split(';');
-                    //_cookie = temp[0];
-                }
             }
         }
 
@@ -79,6 +71,7 @@ namespace AventStack.ExtentReports.MediaStorageNS
 
             var uri = new Uri(_host + _route);
             var file = File.ReadAllBytes(m.Path);
+            var fileName = m.Sequence + Path.GetExtension(m.Path);
 
             using (var reader = new StreamReader(m.Path))
             {
@@ -113,7 +106,7 @@ namespace AventStack.ExtentReports.MediaStorageNS
                         var imageContent = new ByteArrayContent(file);
                         content.Add(imageContent,
                             '"' + "f" + '"',
-                            '"' + "test.txt" + '"');
+                            '"' + fileName + '"');
 
                         var result = client.PostAsync("/" + _route, content).Result;
 

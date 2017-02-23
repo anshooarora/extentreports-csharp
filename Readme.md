@@ -1,7 +1,5 @@
 # ExtentAPI 3.x .NET
 
-#### This is a pre-release version. 
-
 ### Samples
 
  * <a href='http://extentreports.com/os/3/extent.html'>Standard</a>
@@ -41,8 +39,13 @@ up-arrow - scroll up
 ```
 var htmlReporter = new ExtentHtmlReporter("filePath");
 
+var extentxReporter = new ExtentXReporter();
+extentxReporter.Configuration().ReportName = "Build123";
+extentxReporter.Configuration().ProjectName = "MyProject";
+extentxReporter.Configuration().ServerURL = "http://localhost:1337/";
+
 var extent = new ExtentReports();
-extent.AttachReporter(htmlReporter);
+extent.AttachReporter(htmlReporter, extentxReporter);
 ```
 
 ### Creating Tests

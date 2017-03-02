@@ -1,8 +1,11 @@
-# ExtentAPI 3.x .NET
+# ExtentAPI v3 .NET
 
 Note: Use [version 1.0.0+](https://github.com/anshooarora/extentx) of ExtentX with this version.
 
-#### Current Version: 3.0.0
+#### Current Version: 3.0.1
+
+#### Changelog
+
 
 ### Samples
 

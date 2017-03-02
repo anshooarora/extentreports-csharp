@@ -6,6 +6,7 @@ Note: Use [version 1.0.0+](https://github.com/anshooarora/extentx) of ExtentX wi
 
 #### Changelog
 
+ * Fix: #31 - Fix issue where template language is shown in category view
 
 ### Samples
 

@@ -32,15 +32,9 @@
                             <div class='category-heading'>
                                 <span class='category-name'>@category.Name</span>
                                 <span class='category-status right'>
-                                    <#if category.passed !=0>
-                                        <span class='label pass'>@category.Passed</span>
-                                    </#if>
-                                    <#if category.failed !=0>
-                                        <span class='label fail'>@category.Failed</span>
-                                    </#if>
-                                    <#if category.others !=0>
-                                        <span class='label others'>@category.Others</span>
-                                    </#if>
+                                    @if (category.Passed > 0) { <span class='label pass'>@category.Passed</span> }
+                                    @if (category.Failed > 0) { <span class='label fail'>@category.Failed</span> }
+                                    @if (category.Others > 0) { <span class='label others'>@category.Others</span> }
                                 </span>
                             </div>
                             <div class='category-content hide'>

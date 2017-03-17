@@ -13,7 +13,7 @@ namespace AventStack.ExtentReports.Reporter.Configuration
             set
             {
                 _projectName = value;
-                _userConfiguration.Add("projectName", value);
+                UserConfiguration.Add("projectName", value);
             }
         }
 
@@ -26,7 +26,7 @@ namespace AventStack.ExtentReports.Reporter.Configuration
             set
             {
                 _serverUrl = value;
-                _userConfiguration.Add("serverUrl", value);
+                UserConfiguration.Add("serverUrl", value);
             }
         }
 
@@ -39,7 +39,7 @@ namespace AventStack.ExtentReports.Reporter.Configuration
             set
             {
                 _reportObjectId = value;
-                _userConfiguration.Add("reportId", value.ToString());
+                UserConfiguration.Add("reportId", value.ToString());
             }
         }
 

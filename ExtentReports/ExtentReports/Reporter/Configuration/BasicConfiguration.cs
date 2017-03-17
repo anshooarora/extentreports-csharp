@@ -13,22 +13,22 @@ namespace AventStack.ExtentReports.Reporter.Configuration
             set
             {
                 _reportName = value;
-                _userConfiguration.Add("reportName", _reportName);
+                UserConfiguration.Add("reportName", _reportName);
             }
         }
 
-        protected Dictionary<string, string> _userConfiguration;
+        internal Dictionary<string, string> UserConfiguration;
 
         private string _reportName;
 
         public BasicConfiguration()
         {
-            _userConfiguration = new Dictionary<string, string>();
+            UserConfiguration = new Dictionary<string, string>();
         }
 
         public Dictionary<string, string> GetConfiguration()
         {
-            return _userConfiguration;
+            return UserConfiguration;
         }
     }
 }

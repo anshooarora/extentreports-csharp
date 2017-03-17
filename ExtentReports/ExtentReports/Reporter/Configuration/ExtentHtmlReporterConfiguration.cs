@@ -13,7 +13,7 @@ namespace AventStack.ExtentReports.Reporter.Configuration
             set
             {
                 _protocol = value;
-                _userConfiguration.Add("protocol", Enum.GetName(typeof(Protocol), _protocol).ToLower());
+                UserConfiguration.Add("protocol", Enum.GetName(typeof(Protocol), _protocol).ToLower());
             }
         }
 
@@ -26,7 +26,7 @@ namespace AventStack.ExtentReports.Reporter.Configuration
             set
             {
                 _chartLocation = value;
-                _userConfiguration.Add("chartLocation", Enum.GetName(typeof(ChartLocation), _chartLocation).ToLower());
+                UserConfiguration.Add("chartLocation", Enum.GetName(typeof(ChartLocation), _chartLocation).ToLower());
             }
         }
 
@@ -39,7 +39,7 @@ namespace AventStack.ExtentReports.Reporter.Configuration
             set
             {
                 _chartVisibilityOnOpen = value;
-                _userConfiguration.Add("chartVisibilityOnOpen", _chartVisibilityOnOpen.ToString().ToLower());
+                UserConfiguration.Add("chartVisibilityOnOpen", _chartVisibilityOnOpen.ToString().ToLower());
             }
         }
 

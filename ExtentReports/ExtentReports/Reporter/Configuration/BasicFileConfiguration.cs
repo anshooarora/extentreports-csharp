@@ -13,7 +13,7 @@ namespace AventStack.ExtentReports.Reporter.Configuration
             set
             {
                 _filePath = value;
-                _userConfiguration.Add("filePath", _filePath);
+                UserConfiguration.Add("filePath", _filePath);
             }
         }
 
@@ -26,7 +26,7 @@ namespace AventStack.ExtentReports.Reporter.Configuration
             set
             {
                 _theme = value;
-                _userConfiguration.Add("theme", Enum.GetName(typeof(Theme), _theme).ToLower());
+                UserConfiguration.Add("theme", Enum.GetName(typeof(Theme), _theme).ToLower());
             }
         }
 
@@ -39,7 +39,7 @@ namespace AventStack.ExtentReports.Reporter.Configuration
             set
             {
                 _encoding = value;
-                _userConfiguration.Add("encoding", _encoding);
+                UserConfiguration.Add("encoding", _encoding);
             }
         }
 
@@ -52,7 +52,7 @@ namespace AventStack.ExtentReports.Reporter.Configuration
             set
             {
                 _documentTitle = value;
-                _userConfiguration.Add("documentTitle", _documentTitle);
+                UserConfiguration.Add("documentTitle", _documentTitle);
             }
         }
 
@@ -65,7 +65,7 @@ namespace AventStack.ExtentReports.Reporter.Configuration
             set
             {
                 _css = value;
-                _userConfiguration.Add("css", _css);
+                UserConfiguration.Add("css", _css);
             }
         }
 
@@ -78,7 +78,7 @@ namespace AventStack.ExtentReports.Reporter.Configuration
             set
             {
                 _js = value;
-                _userConfiguration.Add("js", _js);
+                UserConfiguration.Add("js", _js);
             }
         }
 

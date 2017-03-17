@@ -145,6 +145,12 @@ namespace AventStack.ExtentReports.Reporter
 
         public override void Start()
         {
+            foreach (KeyValuePair<string, string> entry in _reporterConfig.UserConfiguration)
+            {
+                var c = new Config(entry.Key, entry.Value);
+                _configManager.AddConfig(c);
+            }
+
             // database
             _db = _mongoClient.GetDatabase("extent");
 

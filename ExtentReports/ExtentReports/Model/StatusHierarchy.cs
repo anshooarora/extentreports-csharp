@@ -11,7 +11,8 @@ namespace AventStack.ExtentReports.Model
             Status.Warning,
             Status.Skip,
             Status.Pass,
-            Status.Info
+            Status.Info,
+            Status.Debug
         };
 
         public static List<Status> GetStatusHierarchy()

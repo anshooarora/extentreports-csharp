@@ -179,10 +179,7 @@
                                                         }
                                                         @foreach (var log in child.LogContext().GetAllItems())
                                                         {
-                                                            if (log.Status.ToString() != "Pass" && log.Status.ToString() != "Info")
-                                                            {
-                                                                <div class='pre'>@log.Details</div>
-                                                            }
+                                                            <div class='pre'>@log.Details</div>
                                                         }
                                                     </li>
                                                 }
@@ -332,6 +329,8 @@
         <div class='view-summary'>
             <h5 class='test-name'></h5>
 
+            @if (!bdd)
+            {
             <div id='step-filters' class="right">
                 <span class="blue-text" status="info" alt="info" title="info"><i class="material-icons">info_outline</i></span>
                 <span class="green-text" status="pass" alt="pass" title="pass"><i class="material-icons">check_circle</i></span>
@@ -342,6 +341,7 @@
                 <span class="teal-text" status="skip" alt="skip" title="skip"><i class="material-icons">redo</i></span>
                 <span status="clear" alt="Clear filters" title="Clear filters"><i class="material-icons">clear</i></span>
             </div>
+            }
         </div>
     </div>
     <!-- subview right -->

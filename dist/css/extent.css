@@ -337,10 +337,13 @@ nav ul i {
     .test {
         cursor: default;
     }
-    .subview-left .test-name, .subview-left  .category-name, .node-name {
+    .subview-left .test-name, .subview-left  .category-name, .exception-name, .node-name {
         display: inline-block;
         word-break: break-all;
     }
+	.category-list + .author-list {
+		margin-top: 5px;
+	}
     .subview-left .test-name, .node-name {
         font-size: 16px;
         width: 100% !important;
@@ -549,7 +552,7 @@ nav ul i {
 }
 
 /* -- [ theme, dark ] -- */
-body.dark, .dark .collapsible-header {
+body.dark, .dark .collapsible-header, .dark #search-tests {
     background: #111 !important;
     color: #ddd !important;
 }

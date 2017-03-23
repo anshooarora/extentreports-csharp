@@ -51,6 +51,28 @@ namespace AventStack.ExtentReports.Reporter
         private Dictionary<string, ObjectId> _exceptionNameObjectIdCollection;
 
         /// <summary>
+        /// MongoDB id of the report
+        /// </summary>
+        public ObjectId ReportId
+        {
+            get
+            {
+                return _reportId;
+            }
+        }
+
+        /// <summary>
+        /// MongoDB id of the project
+        /// </summary>
+        public ObjectId ProjectId
+        {
+            get
+            {
+                return _projectId;
+            }
+        }
+
+        /// <summary>
         /// Connects to MongoDB default settings, localhost:27017
         /// </summary>
         public ExtentXReporter()

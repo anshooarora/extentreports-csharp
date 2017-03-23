@@ -59,6 +59,9 @@ namespace AventStack.ExtentReports.MediaStorageNS
                 _csrf = result._csrf.Value;
 
                 _cookie = res.Headers["Set-Cookie"];
+
+                if (string.IsNullOrEmpty(_cookie))
+                    throw new InvalidOperationException("set-cookie was not returned from the server");
             }
         }
 

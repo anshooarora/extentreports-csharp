@@ -556,7 +556,7 @@ nav ul i {
 }
 
 /* -- [ theme, dark ] -- */
-body.dark, .dark .collapsible-header, .dark #search-tests {
+body.dark, .dark .collapsible-header {
     background: #111 !important;
     color: #ddd !important;
 }
@@ -572,7 +572,7 @@ body.dark, .dark .collapsible-header, .dark #search-tests {
 .dark .pre pre {
     background: transparent !important;
 }
-.dark .side-nav.fixed a, .dark pre, .dark .category, .dark .dropdown-content a {
+.dark .side-nav.fixed a, .dark pre, .dark .category, .dark .dropdown-content a, .dark #search-tests {
     color: #bbb !important;
 }
 .dark pre, .dark #test-view-charts .card-panel, .dark .scenario, .dark .background, .dark ul.steps, .dark .collapsible > li, .dark #charts-row .card-panel {

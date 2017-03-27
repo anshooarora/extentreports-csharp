@@ -144,10 +144,7 @@ namespace AventStack.ExtentReports
                     {
                         x.NodeContext().GetAllItems().ForEach(n =>
                         {
-                            n.LogContext().GetAllItems().ForEach(l =>
-                            {
-                                IncrementItemCountByStatus(ItemLevel.GrandChild, l.Status);
-                            });
+                            IncrementItemCountByStatus(ItemLevel.GrandChild, n.Status);
                         });
                     }
                 });
@@ -156,17 +153,33 @@ namespace AventStack.ExtentReports
 
         private void ExtractStandardTestCounts(Test test)
         {
-            if (!test.HasChildren())
+            IncrementItemCountByStatus(ItemLevel.Parent, test.Status);
+
+            if (test.HasLog())
+                test.LogContext().GetAllItems().ForEach(l => IncrementItemCountByStatus(ItemLevel.GrandChild, l.Status));
+
+            if (test.HasChildren())
+                UpdateGroupCountsForChildrenRecursive(test);
+        }
+
+        private void UpdateGroupCountsForChildrenRecursive(Test test)
+        {
+            if (test.HasLog())
             {
-                IncrementItemCountByStatus(ItemLevel.Parent, test.Status);
-                test.LogContext().GetAllItems().ForEach(x =>
-                {
-                    IncrementItemCountByStatus(ItemLevel.Child, x.Status);
+                test.LogContext().GetAllItems().ForEach(l => {
+                    IncrementItemCountByStatus(ItemLevel.GrandChild, l.Status);
+                });
+            }
+
+            if (test.HasChildren())
+            {
+                test.NodeContext().GetAllItems().ForEach(n => {
+                    UpdateGroupCountsForChildrenRecursive(n);
                 });
             }
             else
             {
-                test.NodeContext().GetAllItems().ForEach(x => ExtractStandardTestCounts(x));
+                IncrementItemCountByStatus(ItemLevel.Child, test.Status);
             }
         }
 
@@ -312,7 +325,5 @@ namespace AventStack.ExtentReports
             Child,
             GrandChild
         }
-
-
     }
 }

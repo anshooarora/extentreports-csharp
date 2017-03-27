@@ -3,11 +3,22 @@
     var bdd = t.HasChildren() && t.NodeContext().Get(0).IsBehaviorDrivenType;
 
     var size = "s12 m6 l6";
-    var testsViewChartsHeading = "Tests";
-    var stepsViewChartsHeading = "Steps";
-    if (bdd)
+    var testsViewChartsHeading = "Classes";
+    var stepsViewChartsHeading = "Tests";
+
+    if (Model.SessionStatusStats.ChildCount == 0)
+    {
+        testsViewChartsHeading = "Tests";
+        stepsViewChartsHeading = "";
+    }
+
+    if (bdd || Model.SessionStatusStats.ChildCount > 0)
     {
         size = "s12 m4 l4";
+    }
+
+    if (bdd)
+    {
         testsViewChartsHeading = "Features";
         stepsViewChartsHeading = "Scenarios";
     }
@@ -30,22 +41,25 @@
             </div>
         </div>
 
-        <div class='col @size np-h'>
-            <div class='card-panel nm-v'>
-                <div class='left panel-name'>@stepsViewChartsHeading</div>
-                <div class='chart-box'>
-                    <canvas id='child-analysis' width='100' height='80'></canvas>
-                </div>
-                <div class='block text-small'>
-                    <span><span class='strong'>@Model.SessionStatusStats.ChildPass</span> step(s) passed</span>
-                </div>
-                <div class='block text-small'>
-                    <span class='strong'>@(Model.SessionStatusStats.ChildFail + Model.SessionStatusStats.ChildFatal)</span> step(s) failed, <span class='strong'>@(Model.SessionStatusStats.ChildError + Model.SessionStatusStats.ChildSkip + Model.SessionStatusStats.ChildWarning + Model.SessionStatusStats.ChildInfo)</span> others
+        @if (Model.SessionStatusStats.ChildCount > 0)
+        {
+            <div class='col @size np-h'>
+                <div class='card-panel nm-v'>
+                    <div class='left panel-name'>@stepsViewChartsHeading</div>
+                    <div class='chart-box'>
+                        <canvas id='child-analysis' width='100' height='80'></canvas>
+                    </div>
+                    <div class='block text-small'>
+                        <span><span class='strong'>@Model.SessionStatusStats.ChildPass</span> step(s) passed</span>
+                    </div>
+                    <div class='block text-small'>
+                        <span class='strong'>@(Model.SessionStatusStats.ChildFail + Model.SessionStatusStats.ChildFatal)</span> step(s) failed, <span class='strong'>@(Model.SessionStatusStats.ChildError + Model.SessionStatusStats.ChildSkip + Model.SessionStatusStats.ChildWarning + Model.SessionStatusStats.ChildInfo)</span> others
+                    </div>
                 </div>
             </div>
-        </div>
+        }
 
-        @if (bdd)
+        @if (Model.SessionStatusStats.GrandChildCount > 0)
         {
             <div class='col @size np-h'>
                 <div class='card-panel nm-v'>

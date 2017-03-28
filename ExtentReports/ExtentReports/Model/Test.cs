@@ -17,8 +17,8 @@ namespace AventStack.ExtentReports.Model
         public ExceptionInfo ExceptionInfo { get; set; }
         public ObjectId ObjectId { get; set; }
         public Status Status { get; private set; }
-        public DateTime StartTime { get; private set; }
-        public DateTime EndTime { get; private set; }
+        public DateTime StartTime { get; set; }
+        public DateTime EndTime { get; set; }
 
         private string _name;
         private Test _parent;
@@ -173,6 +173,7 @@ namespace AventStack.ExtentReports.Model
         {
             UpdateTestStatusRecursive(this);
             EndChildTestsRecursive(this);
+            ComputeEndTimeFromChildren();
 
             Status = Status == Status.Info ? Status.Pass : Status;
         }
@@ -191,6 +192,21 @@ namespace AventStack.ExtentReports.Model
             int testStatusIndex = StatusHierarchy.GetStatusHierarchy().IndexOf(Status);
 
             Status = statusIndex < testStatusIndex ? status : Status;
+        }
+
+        private void ComputeEndTimeFromChildren()
+        {
+            if (HasLog())
+            {
+                var timestamp = LogContext().GetAllItems()[LogContext().Count - 1].Timestamp;
+                EndTime = timestamp;
+            }
+
+            if (HasChildren())
+            {
+                var timestamp = NodeContext().GetAllItems()[NodeContext().Count - 1].EndTime;
+                EndTime = timestamp;
+            }
         }
 
         private void EndChildTestsRecursive(Test test)

@@ -21,6 +21,28 @@ namespace AventStack.ExtentReports
     public class ExtentReports : Report
     {
         /// <summary>
+        /// Type of AnalysisStrategy for the reporter.Not all reporters support this setting.
+        /// 
+        /// There are 2 types of strategies available:
+        /// 
+        /// <list type="bullet">
+        ///     <item>Class: Shows analysis in 3 different charts: Class, Test and Step (log)</item>
+        ///     <item>Test: Shows analysis in 2 different charts: Test and Step(log)</item>
+        /// </list>
+        /// </summary>
+        public AnalysisStrategy AnalysisStrategy
+        {
+            get
+            {
+                return _strategy;
+            }
+            set
+            {
+                SetAnalysisStrategy(value);
+            }
+        }
+
+        /// <summary>
         /// Attach a <see cref="IExtentReporter"/> reporter, allowing it to access all started tests, nodes and logs 
         /// </summary>
         /// <param name="reporter"><see cref="IExtentReporter" /></param>

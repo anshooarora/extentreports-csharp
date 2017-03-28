@@ -5,7 +5,7 @@
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{C0955EDB-2DCD-4FA9-831E-2F5B7635D41A}</ProjectGuid>
-    <OutputType>Library</OutputType>
+    <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>AventStack.ExtentReports</RootNamespace>
     <AssemblyName>AventStack.ExtentReports</AssemblyName>
@@ -78,6 +78,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AnalysisStrategy.cs" />
     <Compile Include="Configuration\Config.cs" />
     <Compile Include="Configuration\ConfigManager.cs" />
     <Compile Include="ExceptionTestContext.cs" />

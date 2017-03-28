@@ -74,8 +74,12 @@ namespace AventStack.ExtentReports
         }
 
         private List<Test> _testCollection;
+        private AnalysisStrategy _strategy;
 
-        public SessionStatusStats() { }
+        public SessionStatusStats(AnalysisStrategy strategy)
+        {
+            _strategy = strategy;
+        }
 
         internal void Refresh(List<Test> testCollection)
         {
@@ -127,7 +131,13 @@ namespace AventStack.ExtentReports
                 return;
             }
 
-            ExtractStandardTestCounts(test);
+            if (_strategy == AnalysisStrategy.Class)
+            {
+                ExtractStandardTestCountsClassStrategy(test);
+                return;
+            }
+
+            ExtractStandardTestCountsTestStrategy(test);
         }
 
         private void ExtractBddTestCounts(Test test)
@@ -151,15 +161,20 @@ namespace AventStack.ExtentReports
             }
         }
 
-        private void ExtractStandardTestCounts(Test test)
+        private void ExtractStandardTestCountsClassStrategy(Test test)
         {
-            IncrementItemCountByStatus(ItemLevel.Parent, test.Status);
-
             if (test.HasLog())
                 test.LogContext().GetAllItems().ForEach(l => IncrementItemCountByStatus(ItemLevel.GrandChild, l.Status));
 
             if (test.HasChildren())
+            {
+                IncrementItemCountByStatus(ItemLevel.Parent, test.Status);
                 UpdateGroupCountsForChildrenRecursive(test);
+            }
+            else
+            {
+                IncrementItemCountByStatus(ItemLevel.Child, test.Status);
+            }
         }
 
         private void UpdateGroupCountsForChildrenRecursive(Test test)
@@ -182,6 +197,23 @@ namespace AventStack.ExtentReports
                 IncrementItemCountByStatus(ItemLevel.Child, test.Status);
             }
         }
+
+        private void ExtractStandardTestCountsTestStrategy(Test test)
+        {
+            if (!test.HasChildren())
+            {
+                IncrementItemCountByStatus(ItemLevel.Parent, test.Status);
+                test.LogContext().GetAllItems().ForEach(x =>
+                {
+                    IncrementItemCountByStatus(ItemLevel.Child, x.Status);
+                });
+            }
+            else
+            {
+                test.NodeContext().GetAllItems().ForEach(x => ExtractStandardTestCountsTestStrategy(x));
+            }
+        }
+
 
         private void IncrementItemCountByStatus(ItemLevel level, Status status)
         {

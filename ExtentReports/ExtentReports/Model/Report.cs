@@ -9,6 +9,7 @@ namespace AventStack.ExtentReports.Model
     public abstract class Report
     {
         protected bool _useManaulConfiguration = false;
+        protected AnalysisStrategy _strategy = AnalysisStrategy.Test;
 
         private DateTime _startTime;
         private Status _status = Status.Pass;
@@ -27,7 +28,7 @@ namespace AventStack.ExtentReports.Model
 
             _testAttrCategoryContext = new TestAttributeTestContextProvider<Category>();
             _testAttrAuthorContext = new TestAttributeTestContextProvider<Author>();
-            _sessionStatusStats = new SessionStatusStats();
+            _sessionStatusStats = new SessionStatusStats(_strategy);
             _systemAttributeContext = new SystemAttributeContext();
             _exceptionTestContextProvider = new ExceptionTestContextProvider();
         }
@@ -215,6 +216,12 @@ namespace AventStack.ExtentReports.Model
                 _testRunnerLogCollection = new List<string>();
 
             _testRunnerLogCollection.Add(log);
+        }
+
+        protected void SetAnalysisStrategy(AnalysisStrategy strategy)
+        {
+            _strategy = strategy;
+            _sessionStatusStats = new SessionStatusStats(strategy);
         }
     }
 }

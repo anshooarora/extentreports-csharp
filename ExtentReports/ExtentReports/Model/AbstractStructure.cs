@@ -26,6 +26,11 @@ namespace AventStack.ExtentReports.Model
             _list.Add(t);
         }
 
+        public void Remove(T t)
+        {
+            _list.Remove(t);
+        }
+
         public T Get(int index)
         {
             return _list[index];

@@ -122,6 +122,15 @@ namespace AventStack.ExtentReports
         }
 
         /// <summary>
+        /// Allows removing a test from the list
+        /// </summary>
+        /// <param name="test"><see cref="ExtentTest"/> An ExtentTest object</param>
+        public void RemoveTest(ExtentTest test)
+        {
+            base.RemoveTest(test.GetModel());
+        }
+
+        /// <summary>
         /// Writes test information from the started reporters to their output view
         /// </summary>
         [MethodImpl(MethodImplOptions.Synchronized)]

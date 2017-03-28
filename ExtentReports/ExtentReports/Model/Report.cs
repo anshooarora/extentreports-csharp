@@ -63,6 +63,31 @@ namespace AventStack.ExtentReports.Model
         }
 
         [MethodImpl(MethodImplOptions.Synchronized)]
+        protected void RemoveTest(Test test)
+        {
+            foreach (var t in _testCollection)
+            {
+                if (t.TestId == test.TestId)
+                {
+                    _testCollection.Remove(t);
+                    return;
+                }
+
+                if (t.HasChildren())
+                {
+                    foreach (var n in t.NodeContext().GetAllItems())
+                    {
+                        if (n.TestId == test.TestId)
+                        {
+                            t.NodeContext().Remove(n);
+                            return;
+                        }
+                    }
+                }
+            }
+        }
+
+        [MethodImpl(MethodImplOptions.Synchronized)]
         internal void AddNode(Test node)
         {
             _reporterCollection.ForEach(x => x.OnNodeStarted(node));

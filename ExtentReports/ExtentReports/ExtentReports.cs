@@ -68,7 +68,7 @@ namespace AventStack.ExtentReports
         /// <typeparam name="T">A <see cref="IGherkinFormatterModel"/> type</typeparam>
         /// <param name="name">Test name</param>
         /// <param name="description">A short description</param>
-        /// <returns></returns>
+        /// <returns><see cref="ExtentTest"/></returns>
         [MethodImpl(MethodImplOptions.Synchronized)]
         public ExtentTest CreateTest<T>(string name, string description = null) where T : IGherkinFormatterModel
         {
@@ -86,7 +86,7 @@ namespace AventStack.ExtentReports
         /// </summary>
         /// <param name="name">Test name</param>
         /// <param name="description">A short description</param>
-        /// <returns></returns>
+        /// <returns><see cref="ExtentTest"/></returns>
         [MethodImpl(MethodImplOptions.Synchronized)]
         public ExtentTest CreateTest(string name, string description = null)
         {
@@ -112,7 +112,7 @@ namespace AventStack.ExtentReports
         /// <param name="gherkinKeyword">Name of the <see cref="GherkinKeyword"/></param>
         /// <param name="name">Test name</param>
         /// <param name="description">A short description</param>
-        /// <returns></returns>
+        /// <returns><see cref="ExtentTest"/></returns>
         [MethodImpl(MethodImplOptions.Synchronized)]
         public ExtentTest CreateTest(GherkinKeyword gherkinKeyword, string name, string description = null)
         {

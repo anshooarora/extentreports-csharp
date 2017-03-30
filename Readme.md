@@ -2,7 +2,7 @@
 
 [![Join the chat at https://gitter.im/anshooarora/extentreports-csharp](https://badges.gitter.im/anshooarora/extentreports-csharp.svg)](https://gitter.im/anshooarora/extentreports-csharp?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
-#### Current Version: 3.0.1
+#### Current Version: 3.0.2
 
 .NET Framework 4.5+ only.
 

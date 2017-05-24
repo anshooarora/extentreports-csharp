@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 
 using AventStack.ExtentReports.Gherkin.Model;
 using AventStack.ExtentReports.Model;
@@ -18,6 +19,7 @@ namespace AventStack.ExtentReports
     /// turn build the said reports.
     /// </para>
     /// </summary>
+    [ComVisible(true)]
     public class ExtentReports : Report
     {
         /// <summary>

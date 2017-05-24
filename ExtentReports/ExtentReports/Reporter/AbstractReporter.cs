@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 
 using AventStack.ExtentReports.Model;
 
 namespace AventStack.ExtentReports.Reporter
 {
+    [ComVisible(true)]
     public abstract class AbstractReporter : IExtentReporter
     {
         public AbstractReporter()

@@ -1,22 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
+using System.Reflection;
+using System.IO;
+using System.Configuration;
+using System.Xml.Linq;
 
 using AventStack.ExtentReports.Model;
 using AventStack.ExtentReports.Reporter.Configuration.Defaults;
 using AventStack.ExtentReports.Resources.View;
+using AventStack.ExtentReports.Configuration;
+using AventStack.ExtentReports.Reporter.Configuration;
 
 using RazorEngine;
 using RazorEngine.Configuration;
 using RazorEngine.Templating;
 using RazorEngine.Text;
-using System.Runtime.CompilerServices;
-using System.Reflection;
-using System.IO;
-using System.Configuration;
-using AventStack.ExtentReports.Configuration;
-using System.Xml.Linq;
-using AventStack.ExtentReports.Reporter.Configuration;
 
 namespace AventStack.ExtentReports.Reporter
 {

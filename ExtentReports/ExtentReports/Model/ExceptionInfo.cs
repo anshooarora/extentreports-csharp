@@ -14,7 +14,9 @@ namespace AventStack.ExtentReports.Model
         public ExceptionInfo(Exception ex)
         {
             Exception = ex;
-            StackTrace = _lhs + ex.StackTrace + _rhs;
+
+            var msg = ex.StackTrace == null ? ex.Message : ex.StackTrace;
+            StackTrace = _lhs + msg + _rhs;
             Name = ex.GetType().FullName;
         }
     }

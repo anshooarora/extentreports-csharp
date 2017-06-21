@@ -38,8 +38,10 @@ namespace AventStack.ExtentReports.Model
             get
             {
                 if (_screenCapture != null)
+                {
                     _details = _details + _screenCapture.Source;
-
+                    _screenCapture = null;
+                }
                 return _details;
             }
             set

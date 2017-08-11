@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading;
+using System.Runtime.CompilerServices;
 
 using AventStack.ExtentReports.Gherkin.Model;
 
@@ -16,7 +17,7 @@ namespace AventStack.ExtentReports.Model
         public int TestId { get; private set; }
         public ExceptionInfo ExceptionInfo { get; set; }
         public ObjectId ObjectId { get; set; }
-        public Status Status { get; private set; }
+        public Status Status { [MethodImpl(MethodImplOptions.Synchronized)] get; [MethodImpl(MethodImplOptions.Synchronized)] private set; }
         public DateTime StartTime { get; set; }
         public DateTime EndTime { get; set; }
 
@@ -186,6 +187,7 @@ namespace AventStack.ExtentReports.Model
                 test.NodeContext().GetAllItems().ForEach(x => UpdateTestStatusRecursive(x));
         }
 
+        [MethodImpl(MethodImplOptions.Synchronized)]
         private void UpdateStatus(Status status)
         {
             int statusIndex = StatusHierarchy.GetStatusHierarchy().IndexOf(status);

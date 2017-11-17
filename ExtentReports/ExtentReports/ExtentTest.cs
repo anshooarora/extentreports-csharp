@@ -517,7 +517,6 @@ namespace AventStack.ExtentReports
             if (_test.ObjectId != null)
             {
                 int seq = _test.ScreenCaptureContext().Count;
-                sc.Sequence = seq;
                 sc.TestObjectId = _test.ObjectId;
             }
 

@@ -156,6 +156,7 @@
     <Compile Include="Reporter\Configuration\Theme.cs" />
     <Compile Include="Reporter\ExtentHtmlReporter.cs" />
     <Compile Include="Reporter\ExtentXReporter.cs" />
+    <Compile Include="Reporter\KlovReporter.cs" />
     <Compile Include="Reporter\ReportAppendable.cs" />
     <Compile Include="Resources\GherkinLanguages.Designer.cs">
       <AutoGen>True</AutoGen>

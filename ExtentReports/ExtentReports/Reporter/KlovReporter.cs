@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.IO;
-using System.Configuration;
-using System.Xml.Linq;
 
 using MongoDB.Driver;
 using MongoDB.Bson;
@@ -11,19 +9,14 @@ using MongoDB.Bson;
 using AventStack.ExtentReports.Model;
 using AventStack.ExtentReports.Reporter.Configuration;
 using AventStack.ExtentReports.Configuration;
-using AventStack.ExtentReports.Reporter.Configuration.Defaults;
 using AventStack.ExtentReports.MediaStorageNS;
 
 namespace AventStack.ExtentReports.Reporter
 {
-    /// <summary>
-    /// ExtentXReporter is a NoSQL database reporter (MongoDB by default), which updates information in
-    /// the database which is then used by the ExtentX server to display in-depth analysis. 
-    /// </summary>
-    [Obsolete("ExtentXReporter is now obsolete. Please use KlovReporter instead.")]
-    public class ExtentXReporter : AbstractReporter, ReportAppendable
+    public class KlovReporter : AbstractReporter, ReportAppendable
     {
         private const string DEFAULT_PROJECT_NAME = "Default";
+        private const string _DB = "klov";
 
         private bool _appendExistingReport = false;
         private string _url;
@@ -41,8 +34,6 @@ namespace AventStack.ExtentReports.Reporter
         private IMongoCollection<BsonDocument> _mediaCollection;
         private IMongoCollection<BsonDocument> _categoryCollection;
         private IMongoCollection<BsonDocument> _authorCollection;
-        private IMongoCollection<BsonDocument> _categoryTestsTestCategories;
-        private IMongoCollection<BsonDocument> _authorTestsTestAuthors;
 
         private MediaStorage _media;
         private ExtentXReporterConfiguration _reporterConfig;
@@ -50,6 +41,46 @@ namespace AventStack.ExtentReports.Reporter
 
         private Dictionary<string, ObjectId> _categoryNameObjectIdCollection;
         private Dictionary<string, ObjectId> _exceptionNameObjectIdCollection;
+
+        private string _reportName;
+        private string _projectName;
+
+
+        public string ReportName
+        {
+            get
+            {
+                return _reportName;
+            }
+            set
+            {
+                _reportName = value;
+            }
+        }
+
+        public string ProjectName
+        {
+            get
+            {
+                return _projectName;
+            }
+            set
+            {
+                _projectName = value;
+            }
+        }
+
+        public string KlovUrl
+        {
+            get
+            {
+                return _url;
+            }
+            set
+            {
+                _url = value;
+            }
+        }
 
         /// <summary>
         /// MongoDB id of the report
@@ -59,6 +90,42 @@ namespace AventStack.ExtentReports.Reporter
             get
             {
                 return _reportId;
+            }
+            private set
+            {
+                _reportId = value;
+            }
+        }
+
+        public ObjectId LastRunReportId
+        {
+            get
+            {
+                CreateCollections();
+                LoadCurrentConfig();
+
+                BsonDocument finder = null;
+                if (_projectId == new ObjectId("000000000000000000000000"))
+                {
+                    SetupProject(false);
+                }
+
+                if (_projectId != new ObjectId("000000000000000000000000"))
+                {
+                    finder = new BsonDocument { { "project", _projectId } };
+                }
+
+                var sorter = new BsonDocument { { "_id", -1 } };
+                IFindFluent<BsonDocument, BsonDocument> result;
+                if (finder == null)
+                    result = _reportCollection.Find(_ => true).Sort(sorter).Limit(1);
+                else
+                    result = _reportCollection.Find(finder).Sort(sorter).Limit(1);
+
+                if (result != null && result.First() != null)
+                    return result.First()["_id"].AsObjectId;
+
+                return new ObjectId();
             }
         }
 
@@ -76,15 +143,13 @@ namespace AventStack.ExtentReports.Reporter
         /// <summary>
         /// Connects to MongoDB default settings, localhost:27017
         /// </summary>
-        public ExtentXReporter()
+        public void InitMongoDbConnection()
         {
-            LoadDefaultConfig();
             _mongoClient = new MongoClient();
         }
 
-        public ExtentXReporter(string host, int port = -1)
+        public void InitMongoDbConnection(string host, int port = -1)
         {
-            LoadDefaultConfig();
             var conn = "mongodb://" + host;
             conn += port > -1 ? ":" + port : "";
             _mongoClient = new MongoClient(conn);
@@ -95,32 +160,14 @@ namespace AventStack.ExtentReports.Reporter
         /// Example: mongodb://host:27017,host2:27017/?replicaSet=rs0
         /// </summary>
         /// <param name="connectionString"></param>
-        public ExtentXReporter(string connectionString)
+        public void InitMongoDbConnection(string connectionString)
         {
-            LoadDefaultConfig();
             _mongoClient = new MongoClient(connectionString);
         }
 
-        public ExtentXReporter(MongoClientSettings settings)
+        public void InitMongoDbConnection(MongoClientSettings settings)
         {
-            LoadDefaultConfig();
             _mongoClient = new MongoClient(settings);
-        }
-
-        private void LoadDefaultConfig()
-        {
-            _configManager = new ConfigManager();
-            _reporterConfig = new ExtentXReporterConfiguration();
-
-            // load default settings
-            foreach (SettingsProperty setting in ExtentXReporterSettings.Default.Properties)
-            {
-                var key = setting.Name;
-                var value = ExtentXReporterSettings.Default.Properties[setting.Name].DefaultValue.ToString();
-
-                var c = new Config(key, value);
-                _configManager.AddConfig(c);
-            }
         }
 
         public ExtentXReporterConfiguration Configuration()
@@ -140,42 +187,28 @@ namespace AventStack.ExtentReports.Reporter
             }
         }
 
-        public override void LoadConfig(string filePath)
-        {
-            if (!File.Exists(filePath))
-                throw new FileNotFoundException("The file " + filePath + " was not found.");
-
-            var xdoc = XDocument.Load(filePath, LoadOptions.None);
-            if (xdoc == null)
-            {
-                throw new FileLoadException("Unable to configure report with the supplied configuration. Please check the input file and try again.");
-            }
-
-            LoadConfigFileContents(xdoc);
-        }
-
-        private void LoadConfigFileContents(XDocument xdoc)
-        {
-            foreach (var xe in xdoc.Descendants("configuration").First().Elements())
-            {
-                var key = xe.Name.ToString();
-                var value = xe.Value;
-
-                var c = new Config(key, value);
-                _configManager.AddConfig(c);
-            }
-        }
-
         public override void Start()
+        {
+            CreateCollections();
+            SetupProject(true);
+        }
+
+        private void LoadCurrentConfig()
         {
             foreach (KeyValuePair<string, string> entry in _reporterConfig.UserConfiguration)
             {
                 var c = new Config(entry.Key, entry.Value);
                 _configManager.AddConfig(c);
             }
+        }
+
+        private void CreateCollections()
+        {
+            if (_db != null || _projectCollection != null)
+                return;
 
             // database
-            _db = _mongoClient.GetDatabase("extent");
+            _db = _mongoClient.GetDatabase(_DB);
 
             // collections
             _projectCollection = _db.GetCollection<BsonDocument>("project");
@@ -186,17 +219,11 @@ namespace AventStack.ExtentReports.Reporter
             _mediaCollection = _db.GetCollection<BsonDocument>("media");
             _categoryCollection = _db.GetCollection<BsonDocument>("category");
             _authorCollection = _db.GetCollection<BsonDocument>("author");
-
-            // many-to-many
-            _categoryTestsTestCategories = _db.GetCollection<BsonDocument>("category_tests__test_categories");
-            _authorTestsTestAuthors = _db.GetCollection<BsonDocument>("author_tests__test_authors");
-
-            SetupProject();
         }
 
-        private void SetupProject()
+        private void SetupProject(bool setupReport)
         {
-            string projectName = _configManager.GetValue("projectName");
+            string projectName = string.IsNullOrEmpty(_projectName) ? DEFAULT_PROJECT_NAME : _projectName;
 
             if (string.IsNullOrEmpty(projectName))
                 projectName = DEFAULT_PROJECT_NAME;
@@ -217,19 +244,24 @@ namespace AventStack.ExtentReports.Reporter
                 _projectId = document["_id"].AsObjectId;
             }
 
-            SetupReport(projectName);
+            if (setupReport)
+                SetupReport(projectName);
         }
 
         private void SetupReport(string projectName)
         {
-            string reportName = _configManager.GetValue("reportName");
+            if (ReportId != new ObjectId("000000000000000000000000"))
+                return;
+
+            string reportName = string.IsNullOrEmpty(_reportName) ? DateTime.Now.ToString() : _reportName;
 
             if (string.IsNullOrEmpty(reportName))
                 reportName = "[" + projectName + "] " + DateTime.Now.ToString();
 
             BsonDocument document;
 
-            var reportId = _configManager.GetValue("reportId");
+            //var reportId = _configManager.GetValue("reportId");
+            string reportId = null;
 
             // if extent is started with [AppendExisting = false] and ExtentX is used,
             // use the same report ID for the 1st report run and update the database for
@@ -270,10 +302,27 @@ namespace AventStack.ExtentReports.Reporter
             if (TestList == null || TestList.Count == 0)
                 return;
 
+            var duration = DateTime.Now.Subtract(StartTime).TotalMilliseconds;
+
+            if (duration.ToString().Contains("."))
+                duration = Convert.ToDouble(duration.ToString().Split('.')[0]);
+
+            List<String> categoryNameList = null;
+            List<ObjectId> categoryIdList = null;
+
+            if (_categoryNameObjectIdCollection == null)
+                _categoryNameObjectIdCollection = new Dictionary<string, ObjectId>();
+
+            if (_categoryNameObjectIdCollection.Any())
+            {
+                categoryNameList = new List<string>(_categoryNameObjectIdCollection.Keys);
+                categoryIdList = new List<ObjectId>(_categoryNameObjectIdCollection.Values);
+            }
+
             var filter = Builders<BsonDocument>.Filter.Eq("_id", _reportId);
             var update = Builders<BsonDocument>.Update
                 .Set("endTime", DateTime.Now)
-                .Set("duration", DateTime.Now - StartTime)
+                .Set("duration", duration)
                 .Set("parentLength", SessionStatusStats.ParentCount)
                 .Set("passParentLength", SessionStatusStats.ParentPass)
                 .Set("failParentLength", SessionStatusStats.ParentFail)
@@ -300,7 +349,10 @@ namespace AventStack.ExtentReports.Reporter
                 .Set("errorGrandChildLength", SessionStatusStats.GrandChildError)
                 .Set("warningGrandChildLength", SessionStatusStats.GrandChildWarning)
                 .Set("skipGrandChildLength", SessionStatusStats.GrandChildSkip)
-                .Set("exceptionsGrandChildLength", SessionStatusStats.GrandChildExceptions);
+                .Set("exceptionsGrandChildLength", SessionStatusStats.GrandChildExceptions)
+
+                .Set("categoryNameList", categoryNameList)
+                .Set("categoryIdList", categoryIdList);
 
             _reportCollection.UpdateOne(filter, update);
         }
@@ -318,6 +370,7 @@ namespace AventStack.ExtentReports.Reporter
                 { "startTime", test.StartTime },
                 { "endTime", test.EndTime },
                 { "bdd", test.IsBehaviorDrivenType },
+                { "leaf", test.HasChildren() },
                 { "childNodesLength", test.NodeContext().Count }
             };
 
@@ -344,6 +397,7 @@ namespace AventStack.ExtentReports.Reporter
                 { "startTime", node.StartTime },
                 { "endTime", node.EndTime },
                 { "bdd", node.IsBehaviorDrivenType },
+                { "leaf", node.HasChildren() },
                 { "childNodesLength", node.NodeContext().Count }
             };
 
@@ -380,6 +434,9 @@ namespace AventStack.ExtentReports.Reporter
             };
 
             _logCollection.InsertOne(document);
+
+            var id = document["_id"].AsObjectId;
+            log.ObjectId = id;
 
             if (test.HasException())
             {
@@ -445,7 +502,15 @@ namespace AventStack.ExtentReports.Reporter
                 .Set("status", test.Status.ToString().ToLower())
                 .Set("endTime", test.EndTime)
                 .Set("duration", test.RunDuration.ToString())
+                .Set("leaf", test.HasChildren())
+                .Set("childNodesLength", test.NodeContext().Count)
                 .Set("categorized", test.HasCategory());
+
+            if (test.HasCategory())
+            {
+                var categoryNameList = test.CategoryContext().GetAllItems().Select(x => x.Name);
+                update.Set("categoryNameList", categoryNameList);
+            }
 
             _testCollection.UpdateOne(filter, update);
 
@@ -466,18 +531,6 @@ namespace AventStack.ExtentReports.Reporter
             };
 
             _authorCollection.InsertOne(document);
-
-            var authorId = document["_id"].AsObjectId;
-
-            document = new BsonDocument
-            {
-                { "test_authors", test.ObjectId },
-                { "author_tests", authorId },
-                { "author", author.Name },
-                { "test", test.Name }
-            };
-
-            _authorTestsTestAuthors.InsertOne(document);
         }
 
         public override void OnCategoryAssigned(Test test, Category category)
@@ -521,32 +574,32 @@ namespace AventStack.ExtentReports.Reporter
                     _categoryNameObjectIdCollection.Add(category.Name, categoryId);
                 }
             }
-
-            /* create association with category
-             * tests (many) <-> categories (many)
-             * tests and categories have a many to many relationship
-             *   - a test can be assigned with one or more categories
-             *   - a category can have one or more tests
-             */
-            document = new BsonDocument
-            {
-                { "test_categories", test.ObjectId },
-                { "category_tests", _categoryNameObjectIdCollection[category.Name] },
-                { "category", category.Name },
-                { "test", test.Name }
-            };
-
-            _categoryTestsTestCategories.InsertOne(document);
         }
 
         public override void OnScreenCaptureAdded(Test test, ScreenCapture screenCapture)
         {
-            StoreURL();
-            screenCapture.ReportObjectId = _reportId;
+            OnScreenCaptureInit(screenCapture);
 
             CreateMedia(test, screenCapture);
             InitMedia();
             _media.StoreMedia(screenCapture);
+        }
+
+        public override void OnScreenCaptureAdded(Log log, ScreenCapture screenCapture)
+        {
+            screenCapture.LogObjectId = log.ObjectId;
+
+            OnScreenCaptureInit(screenCapture);
+
+            CreateMedia(log, screenCapture);
+            InitMedia();
+            _media.StoreMedia(screenCapture);
+        }
+
+        private void OnScreenCaptureInit(ScreenCapture screenCapture)
+        {
+            StoreURL();
+            screenCapture.ReportObjectId = _reportId;
         }
 
         private void StoreURL()
@@ -576,15 +629,43 @@ namespace AventStack.ExtentReports.Reporter
             media.ObjectId = id;
         }
 
+        private void CreateMedia(Log log, Media media)
+        {
+            var document = new BsonDocument
+            {
+                { "log", log.ObjectId },
+                { "project", _projectId },
+                { "report", _reportId },
+                { "testName", log.ParentModel.Name },
+                { "sequence", media.Sequence },
+                { "mediaType", media.MediaType.ToString().ToLower() }
+            };
+
+            _mediaCollection.InsertOne(document);
+
+            var id = document["_id"].AsObjectId;
+            media.ObjectId = id;
+        }
+
         private void InitMedia()
         {
             if (_media == null)
             {
-                _media = new MediaStorageManagerFactory().GetManager("http");
+                _media = new MediaStorageManagerFactory().GetManager("http-klov");
                 _media.Init(_url);
             }
         }
 
-        public override void OnScreenCaptureAdded(Log log, ScreenCapture screenCapture) {}
+        public void AppendToLastRunReport()
+        {
+            var id = LastRunReportId;
+
+            if (id == new ObjectId("000000000000000000000000"))
+                return;
+
+            ReportId = id;
+        }
+
+        public override void LoadConfig(string filePath) { }
     }
 }

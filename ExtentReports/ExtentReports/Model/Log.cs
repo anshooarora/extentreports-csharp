@@ -2,6 +2,8 @@
 
 using AventStack.ExtentReports.MarkupUtils;
 
+using MongoDB.Bson;
+
 namespace AventStack.ExtentReports.Model
 {
     [Serializable]
@@ -9,11 +11,10 @@ namespace AventStack.ExtentReports.Model
     {
         public DateTime Timestamp { get; set; }
         public Status Status { get; set; }
-
+        public ObjectId ObjectId { get; set; }
         public int Sequence = 0;
         public IMarkup Markup;
 
-        private Test _parentModel;
         private ExtentTest _parent;
         private ScreenCapture _screenCapture;
         private string _details;
@@ -25,12 +26,13 @@ namespace AventStack.ExtentReports.Model
 
         public Log(Test test) : this()
         {
-            _parentModel = test;
+            ParentModel = test;
         }
 
         public Log(ExtentTest extentTest) : this()
         {
             _parent = extentTest;
+            ParentModel = _parent.GetModel();
         }
 
         public string Details
@@ -57,7 +59,13 @@ namespace AventStack.ExtentReports.Model
             set
             {
                 _screenCapture = value;
+                _screenCapture.TestObjectId = ParentModel.ObjectId;
             }
+        }
+
+        public Boolean HasScreenCapture()
+        {
+            return _screenCapture != null;
         }
 
         public Test ParentModel
@@ -74,7 +82,7 @@ namespace AventStack.ExtentReports.Model
             private set
             {
                 _parent = value;
-                _parentModel = value.GetModel();
+                ParentModel = value.GetModel();
             }
         }
     }

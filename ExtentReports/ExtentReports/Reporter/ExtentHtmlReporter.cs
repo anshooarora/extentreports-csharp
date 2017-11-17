@@ -153,5 +153,7 @@ namespace AventStack.ExtentReports.Reporter
         {
             return _configManager.GetValue(key);
         }
+
+        public override void OnScreenCaptureAdded(Log log, ScreenCapture screenCapture) {}
     }
 }

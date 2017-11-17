@@ -29,6 +29,7 @@ namespace AventStack.ExtentReports.Reporter
         public abstract void OnLogAdded(Test test, Log log);
         public abstract void OnNodeStarted(Test node);
         public abstract void OnScreenCaptureAdded(Test test, ScreenCapture screenCapture);
+        public abstract void OnScreenCaptureAdded(Log log, ScreenCapture screenCapture);
         public abstract void OnTestStarted(Test test);
         public abstract void Start();
         public abstract void Stop();

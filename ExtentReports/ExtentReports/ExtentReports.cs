@@ -5,6 +5,7 @@ using System.Runtime.InteropServices;
 
 using AventStack.ExtentReports.Gherkin.Model;
 using AventStack.ExtentReports.Model;
+using AventStack.ExtentReports.Gherkin;
 
 namespace AventStack.ExtentReports
 {
@@ -41,6 +42,28 @@ namespace AventStack.ExtentReports
             set
             {
                 SetAnalysisStrategy(value);
+            }
+        }
+
+        /// <summary>
+        /// Allows setting the target language for Gherkin keywords
+        /// 
+        /// Default setting is "en"
+        /// 
+        /// A valid dialect from 
+        /// https://github.com/cucumber/cucumber/blob/master/gherkin/java/src/main/resources/gherkin/gherkin-languages.json
+        /// </summary>
+        public string GherkinLanguage
+        {
+            set
+            {
+                GherkinDialectProvider.Language = value;
+            }
+            get
+            {
+                if (string.IsNullOrEmpty(GherkinLanguage))
+                    return GherkinDialectProvider.Language;
+                return GherkinLanguage;
             }
         }
 
@@ -169,5 +192,6 @@ namespace AventStack.ExtentReports
         {
             log.ToList().ForEach(x => AddTestRunnerLog(x));
         }
+
     }
 }

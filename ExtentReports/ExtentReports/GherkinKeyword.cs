@@ -2,6 +2,8 @@
 using System.Linq;
 
 using AventStack.ExtentReports.Gherkin.Model;
+using AventStack.ExtentReports.Gherkin;
+using System.Collections.Generic;
 
 namespace AventStack.ExtentReports
 {
@@ -25,9 +27,16 @@ namespace AventStack.ExtentReports
         public GherkinKeyword(string keyword)
         {
             var type = typeof(IGherkinFormatterModel);
+            var language = GherkinDialectProvider.Language;
+            var dialect = GherkinDialectProvider.Dialect;
 
             try
             {
+                if (!language.ToLower().Equals(GherkinDialectProvider.DefaultLanguage))
+                {
+                    keyword = dialect.Match(keyword);
+                }
+
                 var gherkinType = AppDomain.CurrentDomain.GetAssemblies()
                     .SelectMany(s => s.GetTypes())
                     .Where(p => p.Name.Equals(keyword, StringComparison.CurrentCultureIgnoreCase))

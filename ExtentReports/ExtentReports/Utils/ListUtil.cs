@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace AventStack.ExtentReports.Utils
@@ -17,6 +18,11 @@ namespace AventStack.ExtentReports.Utils
                 return collection.Count < 1;
 
             return !enumerable.Any();
+        }
+
+        public static bool Contains(this List<string> list, string keyword, StringComparison comp)
+        {
+            return list.FindIndex(x => (string.Compare(x.Trim().ToLower(), keyword, comp) == 0)) != -1;
         }
     }
 }

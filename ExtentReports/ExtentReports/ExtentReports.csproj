@@ -5,7 +5,7 @@
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{C0955EDB-2DCD-4FA9-831E-2F5B7635D41A}</ProjectGuid>
-    <OutputType>Library</OutputType>
+    <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>AventStack.ExtentReports</RootNamespace>
     <AssemblyName>AventStack.ExtentReports</AssemblyName>
@@ -86,6 +86,10 @@
     <Compile Include="ExtentReports.cs" />
     <Compile Include="ExtentTest.cs" />
     <Compile Include="GherkinKeyword.cs" />
+    <Compile Include="Gherkin\GherkinDialect.cs" />
+    <Compile Include="Gherkin\GherkinDialectProvider.cs" />
+    <Compile Include="Gherkin\GherkinKeywords.cs" />
+    <Compile Include="Gherkin\InvalidGherkinLanguage.cs" />
     <Compile Include="Gherkin\Model\And.cs" />
     <Compile Include="Gherkin\Model\Background.cs" />
     <Compile Include="Gherkin\Model\Feature.cs" />
@@ -153,6 +157,11 @@
     <Compile Include="Reporter\ExtentHtmlReporter.cs" />
     <Compile Include="Reporter\ExtentXReporter.cs" />
     <Compile Include="Reporter\ReportAppendable.cs" />
+    <Compile Include="Resources\GherkinLanguages.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>GherkinLanguages.resx</DependentUpon>
+    </Compile>
     <Compile Include="Resources\View\Views.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -201,10 +210,17 @@
     <None Include="Resources\View\HTML\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Resources\GherkinLanguages.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>GherkinLanguages.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
     <EmbeddedResource Include="Resources\View\Views.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Views.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Languages.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

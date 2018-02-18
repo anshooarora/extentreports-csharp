@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading;
 using System.Runtime.CompilerServices;
 
@@ -187,6 +188,22 @@ namespace AventStack.ExtentReports.Model
 
             if (test.HasChildren())
                 test.NodeContext().GetAllItems().ForEach(x => UpdateTestStatusRecursive(x));
+
+            if (!test.IsBehaviorDrivenType)
+            {
+                // if not all children are marked SKIP, then:
+                // ensure the parent has a status that is not SKIP
+                if (this.Status == Status.Skip && test.NodeContext().GetAllItems().Any(x => x.Status != Status.Skip))
+                {
+                    // reset status
+                    Status = Status.Pass;
+                    // compute new status
+                    test.NodeContext().GetAllItems()
+                        .Where(x => x.Status != Status.Skip)
+                        .ToList()
+                        .ForEach(x => UpdateTestStatusRecursive(x));
+                }
+            }
         }
 
         [MethodImpl(MethodImplOptions.Synchronized)]

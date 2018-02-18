@@ -92,6 +92,7 @@
     <Compile Include="Gherkin\InvalidGherkinLanguage.cs" />
     <Compile Include="Gherkin\Model\And.cs" />
     <Compile Include="Gherkin\Model\Background.cs" />
+    <Compile Include="Gherkin\Model\But.cs" />
     <Compile Include="Gherkin\Model\Feature.cs" />
     <Compile Include="Gherkin\Model\Given.cs" />
     <Compile Include="Gherkin\Model\IGherkinFormatterModel.cs" />

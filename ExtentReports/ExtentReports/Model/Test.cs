@@ -170,6 +170,7 @@ namespace AventStack.ExtentReports.Model
             }
         }
 
+        [MethodImpl(MethodImplOptions.Synchronized)]
         public void End()
         {
             UpdateTestStatusRecursive(this);
@@ -179,6 +180,7 @@ namespace AventStack.ExtentReports.Model
             Status = Status == Status.Info ? Status.Pass : Status;
         }
 
+        [MethodImpl(MethodImplOptions.Synchronized)]
         private void UpdateTestStatusRecursive(Test test)
         {
             test.LogContext().GetAllItems().ForEach(x => UpdateStatus(x.Status));

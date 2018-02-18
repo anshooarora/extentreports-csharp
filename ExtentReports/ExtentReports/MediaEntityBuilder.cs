@@ -36,5 +36,34 @@ namespace AventStack.ExtentReports
 
             return _instance;
         }
+
+        public static MediaEntityBuilder CreateScreenCaptureFromBase64String(string base64String)
+        {
+            if (string.IsNullOrEmpty(base64String))
+                throw new IOException("Base64 string cannot be null or empty.");
+        
+            return createScreenCapture(base64String, null, true);
+        }
+
+        private static MediaEntityBuilder createScreenCapture(string pathOrBase64String, string title, bool isBase64String)
+            {
+            var sc = new ScreenCapture();
+            sc.MediaType = MediaType.IMG;
+            
+            if (isBase64String)
+                sc.Base64String = pathOrBase64String;
+            else
+                sc.Path = pathOrBase64String;
+
+            if (title != null)
+                sc.Title = title;
+
+            _media = new ThreadLocal<Media>
+            {
+                Value = sc
+            };
+
+            return _instance;
+        }
     }
 }

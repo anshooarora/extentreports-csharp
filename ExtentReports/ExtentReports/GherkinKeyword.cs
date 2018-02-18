@@ -29,6 +29,7 @@ namespace AventStack.ExtentReports
             var type = typeof(IGherkinFormatterModel);
             var language = GherkinDialectProvider.Language;
             var dialect = GherkinDialectProvider.Dialect;
+            keyword = keyword.Replace(" ", "");
 
             try
             {

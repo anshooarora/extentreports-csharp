@@ -86,7 +86,7 @@
 
             @if (Model.CategoryContext != null && Model.CategoryContext.TestAttributeContextCollection.Count > 0)
             {
-                <div class='col s4'>
+                <div class='col s6'>
                     <div class='card-panel'>
                         <span class='right label cyan white-text'>Categories</span><p>&nbsp;</p>
 
@@ -96,6 +96,7 @@
                                 <th>Passed</th>
                                 <th>Failed</th>
                                 <th>Others</th>
+								<th>Passed %</th>
                             </tr>
                             @foreach (var category in Model.CategoryContext.TestAttributeContextCollection)
                             {
@@ -104,6 +105,7 @@
                                     <td>@category.Passed</td>
                                     <td>@category.Failed</td>
                                     <td>@category.Others</td>
+									<td>@category.PassedPercentage%</td>
                                 </tr>
                             }
                         </table>

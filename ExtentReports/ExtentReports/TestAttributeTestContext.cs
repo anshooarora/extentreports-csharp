@@ -12,6 +12,18 @@ namespace AventStack.ExtentReports
         public int Failed { get; private set; }
         public int Others { get; private set; }
 
+        public double PassedPercentage
+        {
+            get
+            {
+                if (TestCollection.Count == 0 || Passed == 0)
+                    return 0;
+
+                double d = (double) (Passed*100 / TestCollection.Count) ;
+                return d;
+            }
+        }
+
         private T _testAttribute;
 
         public TestAttributeTestContext(T testAttribute)

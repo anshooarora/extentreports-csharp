@@ -6,7 +6,7 @@
 
 .NET Framework 4.5+ only.
 
-Note: [Klov](https://github.com/anshooarora/klov) report server is supported with ExtentAPI version 3.1.0 onwards.
+Note: [Klovv](https://github.com/anshooarora/klovv) report server is supported with ExtentAPI version 3.1.0 onwards.
 
 ### Documentation
 

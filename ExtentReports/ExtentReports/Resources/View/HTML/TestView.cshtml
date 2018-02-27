@@ -1,0 +1,354 @@
+﻿@using AventStack.ExtentReports.ViewDefs
+
+<div id='test-view' class='view'>
+
+    <section id='controls'>
+        <div class='controls grey lighten-4'>
+            <!-- test toggle -->
+            <div class='chip transparent'>
+                <a class='dropdown-button tests-toggle' data-activates='tests-toggle' data-constrainwidth='true' data-beloworigin='true' data-hover='true' href='#'>
+                    <i class='material-icons'>warning</i> Status
+                </a>
+                <ul id='tests-toggle' class='dropdown-content'>
+                    <li status='pass'><a href='#!'>Pass <i class='material-icons green-text'>check_circle</i></a></li>
+                    <li status='fail'><a href='#!'>Fail <i class='material-icons red-text'>cancel</i></a></li>
+                    <li status='error'><a href='#!'>Error <i class='material-icons red-text lighten-2'>error</i></a></li>
+                    <li status='warning'><a href='#!'>Warning <i class='material-icons orange-text'>warning</i></a></li>
+                    <li status='skip'><a href='#!'>Skip <i class='material-icons cyan-text'>redo</i></a></li>
+                    <li class='divider'></li>
+                    <li status='clear' clear='true'><a href='#!'>Clear Filters <i class='material-icons'>clear</i></a></li>
+                </ul>
+            </div>
+            <!-- test toggle -->
+
+            <!-- category toggle -->
+            @if (Model.CategoryContext != null && Model.CategoryContext.TestAttributeContextCollection.Count > 0)
+            {
+                <div class='chip transparent'>
+                    <a class='dropdown-button category-toggle' data-activates='category-toggle' data-constrainwidth='false' data-beloworigin='true' data-hover='true' href='#'>
+                        <i class='material-icons'>local_offer</i> Category
+                    </a>
+                    <ul id='category-toggle' class='dropdown-content'>
+                        @foreach (var context in Model.CategoryContext.TestAttributeContextCollection)
+                        {
+                            <li><a href='#'>@context.Name</a></li>
+                        }
+                        <li class='divider'></li>
+                        <li class='clear'><a href='#!' clear='true'>Clear Filters</a></li>
+                    </ul>
+                </div>
+            }
+            <!-- category toggle -->
+
+            <!-- clear filters -->
+            <div class='chip transparent hide'>
+                <a class='' id='clear-filters' alt='Clear Filters' title='Clear Filters'>
+                    <i class='material-icons'>close</i> Clear
+                </a>
+            </div>
+            <!-- clear filters -->
+
+            <!-- enable dashboard -->
+            @{ 
+                var visible = Model.GetReporterConfigurationSetting("chartVisibilityOnOpen").Equals("true")
+                    ? true
+                    : false;
+            }
+            <div id='toggle-test-view-charts' class='chip transparent'>
+                @if (visible)
+                {
+                    <a class='pink-text' id='enable-dashboard' alt='Enable Dashboard' title='Enable Dashboard'>
+                        <i class='material-icons'>track_changes</i> Dashboard
+                    </a>
+                }
+                else
+                {
+                    <a class='' id='enable-dashboard' alt='Enable Dashboard' title='Enable Dashboard'>
+                        <i class='material-icons'>track_changes</i> Dashboard
+                    </a>
+                }
+            </div>
+            <!-- enable dashboard -->
+
+            <!-- search -->
+            <div class='chip transparent' alt='Search Tests' title='Search Tests'>
+                <a href="#" class='search-div'>
+                    <i class='material-icons'>search</i> Search
+                </a>
+
+                <div class='input-field left hide'>
+                    <input id='search-tests' type='text' class='validate browser-default' placeholder='Search Tests...'>
+                </div>
+
+            </div>
+            <!-- search -->
+        </div>
+    </section>
+
+    @if (Model.GetReporterConfigurationSetting("chartLocation").Equals("top", StringComparison.CurrentCultureIgnoreCase))
+    {
+        @Include("charts")
+    }
+
+    <div class='subview-left left'>
+
+        <div class='view-summary'>
+            <h5>Tests</h5>
+
+            <ul id='test-collection' class='test-collection'>
+                @{ 
+                    var t = Model.TestList[0];
+                    var bdd = t.HasChildren() && t.NodeContext().Get(0).IsBehaviorDrivenType;
+                }
+
+                @foreach (var test in Model.TestList)
+                {
+                    var containsChildrenClass = "";
+                    if (test.HasChildren())
+                    {
+                        containsChildrenClass = "has-leaf";
+                    }
+
+                    var isTestBddType = test.IsBehaviorDrivenType;
+
+                    <li class='test displayed active @containsChildrenClass @test.Status.ToString().ToLower()' status='@test.Status.ToString().ToLower()' bdd='@isTestBddType' test-id='@test.TestId'>
+                        <div class='test-heading'>
+                            <span class='test-name'>@test.Name</span>
+                            <span class='test-time'>@test.StartTime</span>
+                            <span class='test-status right @test.Status.ToString().ToLower()'>@test.Status</span>
+                        </div>
+                        <div class='test-content hide'>
+                            @if (bdd)
+                            {
+                                foreach (var node in test.NodeContext().GetAllItems())
+                                {
+                                    var type = node.BehaviorDrivenType.GetType().Name.ToString();
+
+                                    <div class='@type.ToLower() node' test-id='@node.TestId' status='@node.Status.ToString().ToLower()'>
+                                        @if (node.HasCategory())
+                                        {
+                                            <div class='category-list'>
+                                                @foreach (var category in node.CategoryContext().GetAllItems())
+                                                {
+                                                    <span class='category label white-text'>@category.Name</span>
+                                                }
+                                            </div>
+                                        }
+                                        <span class='@type.ToLower()-duration right label'>@node.RunDuration</span>
+                                        <div class='@type.ToLower()-desc'>
+                                            <b>@type</b>
+                                            @node.Name
+
+                                            @if (node.HasScreenCapture())
+                                            {
+                                                <ul class='screenshots right'>
+                                                    @foreach (var sc in node.ScreenCaptureContext().GetAllItems())
+                                                    {
+                                                        <li><a data-featherlight="image" href="@sc.Path"><i class='material-icons'>panorama</i></a></li>
+                                                    }
+                                                </ul>
+                                            }
+                                            
+                                            @if (node.Description != null)
+                                            {
+                                                <div class='pre'>@node.Description</div>
+                                            }
+                                        </div>
+                                        @if (node.HasChildren())
+                                        {
+                                            <ul class='steps'>
+                                                @foreach (var child in node.NodeContext().GetAllItems())
+                                                {
+                                                    var childType = child.BehaviorDrivenType.GetType().Name.ToString();
+
+                                                    <li test-id='@child.TestId' class='node @childType.ToLower() @child.Status.ToString().ToLower()' status='@childType.ToLower() @child.Status.ToString().ToLower()'>
+                                                        <b>@childType</b>
+                                                        @child.Name
+                                                        @if (child.HasScreenCapture())
+                                                        {
+                                                            <ul class='screenshots right'>
+                                                                @foreach (var sc in child.ScreenCaptureContext().GetAllItems())
+                                                                {
+                                                                    <li><a data-featherlight="image" href="@sc.Path"><i class='material-icons'>panorama</i></a></li>
+                                                                }
+                                                            </ul>
+                                                        }
+                                                        @if (child.Description != null)
+                                                        {
+                                                            <div class='pre'>@child.Description</div>
+                                                        }
+                                                        @foreach (var log in child.LogContext().GetAllItems())
+                                                        {
+                                                            <div class='pre'>@log.Details</div>
+                                                        }
+                                                    </li>
+                                                }
+                                            </ul>
+                                        }
+                                    </div>
+                                }
+                            }
+                            else
+                            {
+                                <div class='test-time-info'>
+                                    <span class='label start-time'>@test.StartTime</span>
+                                    <span class='label end-time'>@test.EndTime</span>
+                                    <span class='label time-taken grey lighten-1 white-text'>@test.RunDuration</span>
+                                </div>
+
+                                if (!string.IsNullOrEmpty(test.Description))
+                                {
+                                    <div class='test-desc'>@test.Description</div>
+                                }
+
+                                if (test.HasAuthor() || test.HasCategory())
+                                {
+                                    <div class='test-attributes'>
+                                        @if (test.HasCategory())
+                                        {
+                                            <div class='category-list'>
+                                                @foreach (var category in test.CategoryContext().GetAllItems())
+                                                {
+                                                    <span class='category label white-text'>@category.Name</span>
+                                                }
+                                            </div>
+                                        }
+                                        @if (test.HasAuthor())
+                                        {
+                                            <div class='author-list'>
+                                                @foreach (var author in test.AuthorContext().GetAllItems())
+                                                {
+                                                    <span class='author label white-text'>@author.Name</span>
+                                                }
+                                            </div>
+                                        }
+                                    </div>
+                                }
+
+                                if (test.HasLog())
+                                {
+                                    <div class='test-steps'>
+                                        <table class='bordered table-results'>
+                                            <thead>
+                                                <tr>
+                                                    <th>Status</th>
+                                                    <th>Timestamp</th>
+                                                    <th>Details</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach (var log in test.LogContext().GetAllItems())
+                                                {
+                                                    <tr class='log' status='@log.Status.ToString().ToLower()'>
+                                                        <td class='status @log.Status.ToString().ToLower()' title='@log.Status.ToString().ToLower()' alt='@log.Status.ToString().ToLower()'><i class='material-icons'>@Icon.GetIcon(log.Status)</i></td>
+                                                        <td class='timestamp'>@log.Timestamp</td>
+                                                        <td class='step-details'>@log.Details</td>
+                                                    </tr>
+                                                }
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                }
+
+                                if (test.HasChildren())
+                                {
+                                    <ul class='collapsible node-list' data-collapsible='accordion'>
+                                        @foreach (var node in test.NodeContext().GetAllItems())
+                                        {
+                                            <li class='node level-@node.Level @node.Status.ToString().ToLower()' status='@node.Status.ToString().ToLower()' test-id='@node.TestId'>
+                                                <div class='collapsible-header'>
+                                                    <div class='node-name'>@node.Name</div>
+                                                    <span class='node-time'>@node.StartTime</span>
+                                                    <span class='test-status right @node.Status.ToString().ToLower()'>@node.Status</span>
+                                                </div>
+                                                <div class='collapsible-body'>
+                                                    @if (node.HasCategory())
+                                                    {
+                                                        <div class='category-list'>
+                                                            @foreach (var category in node.CategoryContext().GetAllItems())
+                                                            {
+                                                                <span class='category label white-text'>@category.Name</span>
+                                                            }
+                                                        </div>
+                                                    }
+                                                    <div class='node-steps'>
+                                                        <table class='bordered table-results'>
+                                                            <thead>
+                                                                <tr>
+                                                                    <th>Status</th>
+                                                                    <th>Timestamp</th>
+                                                                    <th>Details</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                @foreach (var log in node.LogContext().GetAllItems())
+                                                                {
+                                                                    <tr class='log' status='@log.Status.ToString().ToLower()'>
+                                                                        <td class='status @log.Status.ToString().ToLower()' title='@log.Status.ToString().ToLower()' alt='@log.Status.ToString().ToLower()'><i class='material-icons'>@Icon.GetIcon(log.Status)</i></td>
+                                                                        <td class='timestamp'>@log.Timestamp</td>
+                                                                        <td class='step-details'>@log.Details</td>
+                                                                    </tr>
+                                                                }
+                                                            </tbody>
+                                                        </table>
+                                                        @if (node.HasScreenCapture())
+                                                        {
+                                                            <ul class='screenshots'>
+                                                                @foreach (var sc in node.ScreenCaptureContext().GetAllItems())
+                                                                {
+                                                                    <li>@Raw(sc.Source)</li>
+                                                                }
+                                                            </ul>
+                                                        }
+                                                    </div>
+                                                </div>
+                                            </li>
+                                        }
+                                    </ul>
+                                }
+                            }
+
+                            @if (test.HasScreenCapture())
+                            {
+                                <ul class='screenshots'>
+                                    @foreach (var sc in test.ScreenCaptureContext().GetAllItems())
+                                    {
+                                        <li>@Raw(sc.Source)</li>
+                                    }
+                                </ul>
+                            }
+                        </div>
+                    </li>
+                }
+            </ul>
+        </div>
+    </div>
+    <!-- subview left -->
+
+    <div class='subview-right left'>
+        <div class='view-summary'>
+            <h5 class='test-name'></h5>
+
+            @if (!bdd)
+            {
+            <div id='step-filters' class="right">
+                <span class="blue-text" status="info" alt="info" title="info"><i class="material-icons">info_outline</i></span>
+                <span class="green-text" status="pass" alt="pass" title="pass"><i class="material-icons">check_circle</i></span>
+                <span class="red-text" status="fail" alt="fail" title="fail"><i class="material-icons">cancel</i></span>
+                <span class="red-text text-darken-4" status="fatal" alt="fatal" title="fatal"><i class="material-icons">cancel</i></span>
+                <span class="pink-text text-lighten-1" status="error" alt="error" title="error"><i class="material-icons">error</i></span>
+                <span class="orange-text" alt="warning" status="warning" title="warning"><i class="material-icons">warning</i></span>
+                <span class="teal-text" status="skip" alt="skip" title="skip"><i class="material-icons">redo</i></span>
+                <span status="clear" alt="Clear filters" title="Clear filters"><i class="material-icons">clear</i></span>
+            </div>
+            }
+        </div>
+    </div>
+    <!-- subview right -->
+
+    @if (Model.GetReporterConfigurationSetting("chartLocation").Equals("bottom", StringComparison.CurrentCultureIgnoreCase))
+    {
+        @Include("charts")
+    }
+</div>
+<!-- test view -->

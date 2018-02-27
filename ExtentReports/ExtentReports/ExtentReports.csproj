@@ -1,0 +1,235 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{C0955EDB-2DCD-4FA9-831E-2F5B7635D41A}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>AventStack.ExtentReports</RootNamespace>
+    <AssemblyName>AventStack.ExtentReports</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject />
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="HtmlAgilityPack, Version=1.4.9.5, Culture=neutral, PublicKeyToken=bd319b19eaf3b43a, processorArchitecture=MSIL">
+      <HintPath>..\packages\HtmlAgilityPack.1.4.9.5\lib\Net45\HtmlAgilityPack.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="MongoDB.Bson, Version=2.3.0.157, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\MongoDB.Bson.2.3.0\lib\net45\MongoDB.Bson.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="MongoDB.Driver, Version=2.3.0.157, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\MongoDB.Driver.2.3.0\lib\net45\MongoDB.Driver.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="MongoDB.Driver.Core, Version=2.3.0.157, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\MongoDB.Driver.Core.2.3.0\lib\net45\MongoDB.Driver.Core.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.9.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="RazorEngine, Version=3.9.0.0, Culture=neutral, PublicKeyToken=9ee697374c7e744a, processorArchitecture=MSIL">
+      <HintPath>..\packages\RazorEngine.3.9.0\lib\net45\RazorEngine.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Web.Razor, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.Razor.3.0.0\lib\net45\System.Web.Razor.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AnalysisStrategy.cs" />
+    <Compile Include="Configuration\Config.cs" />
+    <Compile Include="Configuration\ConfigManager.cs" />
+    <Compile Include="ExceptionTestContext.cs" />
+    <Compile Include="ExceptionTestContextProvider.cs" />
+    <Compile Include="ExtentReports.cs" />
+    <Compile Include="ExtentTest.cs" />
+    <Compile Include="GherkinKeyword.cs" />
+    <Compile Include="Gherkin\GherkinDialect.cs" />
+    <Compile Include="Gherkin\GherkinDialectProvider.cs" />
+    <Compile Include="Gherkin\GherkinKeywords.cs" />
+    <Compile Include="Gherkin\InvalidGherkinLanguage.cs" />
+    <Compile Include="Gherkin\Model\And.cs" />
+    <Compile Include="Gherkin\Model\Background.cs" />
+    <Compile Include="Gherkin\Model\But.cs" />
+    <Compile Include="Gherkin\Model\Feature.cs" />
+    <Compile Include="Gherkin\Model\Given.cs" />
+    <Compile Include="Gherkin\Model\IGherkinFormatterModel.cs" />
+    <Compile Include="Gherkin\Model\Scenario.cs" />
+    <Compile Include="Gherkin\Model\Then.cs" />
+    <Compile Include="Gherkin\Model\When.cs" />
+    <Compile Include="IConfigurable.cs" />
+    <Compile Include="IExtentReporter.cs" />
+    <Compile Include="IReportAggregatesListener.cs" />
+    <Compile Include="IReporterConfigurationEntities.cs" />
+    <Compile Include="IRunResult.cs" />
+    <Compile Include="MarkupUtils\CodeBlock.cs" />
+    <Compile Include="MarkupUtils\ExtentColor.cs" />
+    <Compile Include="MarkupUtils\Label.cs" />
+    <Compile Include="MarkupUtils\IMarkup.cs" />
+    <Compile Include="MarkupUtils\MarkupHelper.cs" />
+    <Compile Include="MarkupUtils\Table.cs" />
+    <Compile Include="MediaEntityBuilder.cs" />
+    <Compile Include="MediaEntityModelProvider.cs" />
+    <Compile Include="MediaStorageNS\HttpMediaManager.cs" />
+    <Compile Include="MediaStorageNS\MediaStorage.cs" />
+    <Compile Include="MediaStorageNS\MediaStorageManagerFactory.cs" />
+    <Compile Include="Model\AbstractStructure.cs" />
+    <Compile Include="Model\Attribute.cs" />
+    <Compile Include="Model\Author.cs" />
+    <Compile Include="Model\Category.cs" />
+    <Compile Include="Model\MediaType.cs" />
+    <Compile Include="Model\Report.cs" />
+    <Compile Include="Model\ExceptionInfo.cs" />
+    <Compile Include="Model\IAddsMedia.cs" />
+    <Compile Include="Model\Log.cs" />
+    <Compile Include="Model\Media.cs" />
+    <Compile Include="Model\ScreenCapture.cs" />
+    <Compile Include="Model\StatusHierarchy.cs" />
+    <Compile Include="Model\SystemAttribute.cs" />
+    <Compile Include="Model\Test.cs" />
+    <Compile Include="Model\TestAttribute.cs" />
+    <Compile Include="Model\TIterator.cs" />
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Reporter\AbstractReporter.cs" />
+    <Compile Include="Reporter\BasicFileReporter.cs" />
+    <Compile Include="Reporter\Configuration\BasicConfiguration.cs" />
+    <Compile Include="Reporter\Configuration\BasicFileConfiguration.cs" />
+    <Compile Include="Reporter\Configuration\ChartLocation.cs" />
+    <Compile Include="Reporter\Configuration\Defaults\ExtentHtmlReporterSettings.cs" />
+    <Compile Include="Reporter\Configuration\Defaults\ExtentHtmlReporterSettings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <DependentUpon>ExtentHtmlReporterSettings.settings</DependentUpon>
+    </Compile>
+    <Compile Include="Reporter\Configuration\Defaults\ExtentXReporterSettings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <DependentUpon>ExtentXReporterSettings.settings</DependentUpon>
+    </Compile>
+    <Compile Include="Reporter\Configuration\Defaults\IReporterConfigurationSettings.cs" />
+    <Compile Include="Reporter\Configuration\ExtentHtmlReporterConfiguration.cs" />
+    <Compile Include="Reporter\Configuration\ExtentXReporterConfiguration.cs" />
+    <Compile Include="Reporter\Configuration\IReporterConfiguration.cs" />
+    <Compile Include="Reporter\Configuration\Protocol.cs" />
+    <Compile Include="Reporter\Configuration\Theme.cs" />
+    <Compile Include="Reporter\ExtentHtmlReporter.cs" />
+    <Compile Include="Reporter\ExtentXReporter.cs" />
+    <Compile Include="Reporter\KlovReporter.cs" />
+    <Compile Include="Reporter\ReportAppendable.cs" />
+    <Compile Include="Resources\GherkinLanguages.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>GherkinLanguages.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Resources\View\Views.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Views.resx</DependentUpon>
+    </Compile>
+    <Compile Include="SessionStatusStats.cs" />
+    <Compile Include="Status.cs" />
+    <Compile Include="ITestListener.cs" />
+    <Compile Include="SystemAttributeContext.cs" />
+    <Compile Include="TestAttributeTestContext.cs" />
+    <Compile Include="TestAttributeTestContextProvider.cs" />
+    <Compile Include="Utils\ExceptionUtil.cs" />
+    <Compile Include="Utils\ListUtil.cs" />
+    <Compile Include="Utils\ResourceUtils.cs" />
+    <Compile Include="ViewDefs\Icon.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+    <None Include="packages.config" />
+    <None Include="Reporter\Configuration\Defaults\ExtentHtmlReporterSettings.settings">
+      <Generator>PublicSettingsSingleFileGenerator</Generator>
+      <LastGenOutput>ExtentHtmlReporterSettings.Designer.cs</LastGenOutput>
+    </None>
+    <None Include="Reporter\Configuration\Defaults\ExtentXReporterSettings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>ExtentXReporterSettings.Designer.cs</LastGenOutput>
+    </None>
+    <None Include="Resources\View\HTML\Bdd.cshtml" />
+    <None Include="Resources\View\HTML\CategoryView.cshtml" />
+    <None Include="Resources\View\HTML\DashboardView.cshtml" />
+    <None Include="Resources\View\HTML\ExceptionView.cshtml" />
+    <None Include="Resources\View\HTML\ExceptionView1.cshtml" />
+    <None Include="Resources\View\HTML\ExceptionView2.cshtml" />
+    <None Include="Resources\View\HTML\Head.cshtml" />
+    <None Include="Resources\View\HTML\Nav.cshtml" />
+    <None Include="Resources\View\HTML\Standard.cshtml" />
+    <None Include="Resources\View\HTML\TestRunnerLogs.cshtml" />
+    <None Include="Resources\View\HTML\TestView.cshtml" />
+    <None Include="Resources\View\HTML\TestView1.cshtml" />
+    <None Include="Resources\View\HTML\TestViewCharts.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\TestRunnerLogs.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\View\HTML\Index.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\GherkinLanguages.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>GherkinLanguages.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\View\Views.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Views.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Languages.txt" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

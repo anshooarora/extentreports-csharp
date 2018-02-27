@@ -1,0 +1,118 @@
+﻿@using System
+
+@{ 
+    var sessionStatusStats = Model.SessionStatusStats;
+
+    var t = Model.TestList[0];
+    var bdd = t.HasChildren() && t.NodeContext().Get(0).IsBehaviorDrivenType;
+
+    var currentTime = DateTime.Now;
+    var runDuration = DateTime.Now - Model.StartTime;
+}
+
+<div id='dashboard-view' class='view hide'>
+    <div class='card-panel transparent np-v'>
+        <h5>Dashboard</h5>
+
+        <div class='row'>
+            <div class='col s2'>
+                <div class='card-panel r'>
+                    @if (bdd)
+                    { <span>Features</span> }
+                    else
+                    { <span>Tests</span> }
+                    <div class='panel-lead'>@sessionStatusStats.ParentCount</div>
+                </div>
+            </div>
+            <div class='col s2'>
+                <div class='card-panel r'>
+                    @if (bdd)
+                    { <span>Scenarios</span> }
+                    else
+                    { <span>Steps</span> }
+                    <div class='panel-lead'>@sessionStatusStats.ChildCount</div>
+                </div>
+            </div>
+            @if (bdd)
+            {
+                <div class='col s2'>
+                    <div class='card-panel r'>
+                        Steps
+                        <div class='panel-lead'>@sessionStatusStats.GrandChildCount</div>
+                    </div>
+                </div>
+            }
+            <div class='col s2'>
+                <div class='card-panel r'>
+                    Start
+                    <div class='panel-lead'>@Model.StartTime</div>
+                </div>
+            </div>
+            <div class='col s2'>
+                <div class='card-panel r'>
+                    End
+                    <div class='panel-lead'>@currentTime</div>
+                </div>
+            </div>
+            <div class='col s2'>
+                <div class='card-panel r'>
+                    Time Taken
+                    <div class='panel-lead'>@runDuration</div>
+                </div>
+            </div>
+
+            @if (Model.SystemAttributeContext.SystemAttributeCollection.Count > 0)
+            {
+                <div class='col s4'>
+                    <div class='card-panel'>
+                        <span class='right label cyan white-text'>Environment</span><p>&nbsp;</p>
+
+                        <table>
+                            <tr>
+                                <th>Name</th>
+                                <th>Value</th>
+                            </tr>
+                            @foreach (var attr in Model.SystemAttributeContext.SystemAttributeCollection)
+                            {
+                                <tr>
+                                    <td>@attr.Name</td>
+                                    <td>@attr.Value</td>
+                                </tr>
+                            }
+                        </table>
+                    </div>
+                </div>
+            }
+
+            @if (Model.CategoryContext != null && Model.CategoryContext.TestAttributeContextCollection.Count > 0)
+            {
+                <div class='col s6'>
+                    <div class='card-panel'>
+                        <span class='right label cyan white-text'>Categories</span><p>&nbsp;</p>
+
+                        <table>
+                            <tr>
+                                <th>Name</th>
+                                <th>Passed</th>
+                                <th>Failed</th>
+                                <th>Others</th>
+								<th>Passed %</th>
+                            </tr>
+                            @foreach (var category in Model.CategoryContext.TestAttributeContextCollection)
+                            {
+                                <tr>
+                                    <td>@category.Name</td>
+                                    <td>@category.Passed</td>
+                                    <td>@category.Failed</td>
+                                    <td>@category.Others</td>
+									<td>@category.PassedPercentage%</td>
+                                </tr>
+                            }
+                        </table>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+<!-- dashboard view -->

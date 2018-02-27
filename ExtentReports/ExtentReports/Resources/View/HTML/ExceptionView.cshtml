@@ -1,0 +1,83 @@
+﻿@using System.Collections.Generic;
+@using AventStack.ExtentReports;
+
+@{ 
+    var exceptionContext = Model.ExceptionContext;
+
+    List<ExceptionTestContext> context = null;
+    if (exceptionContext != null)
+    {
+        context = Model.ExceptionContext.ExceptionTestContextCollection;
+    }
+}
+
+@if (context != null)
+{
+    <div id='exception-view' class='view hide'>
+
+        <section id='controls'>
+            <div class='controls grey lighten-4'>
+                <!-- search -->
+                <div class='chip transparent' alt='Search Tests' title='Search Tests'>
+                    <a href="#" class='search-div'>
+                        <i class='material-icons'>search</i> Search
+                    </a>
+
+                    <div class='input-field left hide'>
+                        <input id='search-tests' type='text' class='validate browser-default' placeholder='Search Tests...'>
+                    </div>
+                </div>
+                <!-- search -->
+            </div>
+        </section>
+
+        <div class='subview-left left'>
+
+            <div class='view-summary'>
+                <h5>Exceptions</h5>
+                <ul id='exception-collection' class='exception-collection'>
+
+                    @foreach (var exInfo in context)
+                    {
+                        <li class='exception displayed active'>
+                            <div class='exception-heading'>
+                                <span class='exception-name'>@exInfo.ExceptionName</span>
+                                <span class='exception-count right'><span class='label red lighten-1 white-text'>@exInfo.TestCollection.Count</span></span>
+                            </div>
+                            <div class='exception-content hide'>
+                                <div class='exception-tests'>
+                                    <table class='bordered table-results'>
+                                        <thead>
+                                            <tr>
+                                                <th>Timestamp</th>
+                                                <th>TestName</th>
+                                                <th>Status</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach (var test in exInfo.TestCollection)
+                                            {
+                                                <tr>
+                                                    <td>@test.StartTime</td>
+                                                    <td class='linked' test-id='@test.TestId'>@test.HierarchicalName</td>
+                                                    <td>@test.ExceptionInfo.StackTrace</td>
+                                                </tr>
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </li>
+                    }
+                </ul>
+            </div>
+        </div>
+
+        <div class='subview-right left'>
+            <div class='view-summary'>
+                <h5 class='exception-name'></h5>
+            </div>
+        </div>
+    </div>
+}
+<!-- exception view -->

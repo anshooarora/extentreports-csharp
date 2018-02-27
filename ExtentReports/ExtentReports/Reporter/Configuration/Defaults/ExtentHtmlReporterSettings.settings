@@ -1,0 +1,36 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="AventStack.ExtentReports.Reporter.Configuration.Defaults" GeneratedClassName="ExtentHtmlReporterSettings">
+  <Profiles />
+  <Settings>
+    <Setting Name="encoding" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">utf-8</Value>
+    </Setting>
+    <Setting Name="protocol" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">https</Value>
+    </Setting>
+    <Setting Name="theme" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">standard</Value>
+    </Setting>
+    <Setting Name="chartLocation" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">top</Value>
+    </Setting>
+    <Setting Name="chartVisibilityOnOpen" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">true</Value>
+    </Setting>
+    <Setting Name="documentTitle" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">ExtentReports</Value>
+    </Setting>
+    <Setting Name="reportName" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">ExtentReports</Value>
+    </Setting>
+    <Setting Name="offline" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">false</Value>
+    </Setting>
+    <Setting Name="js" Type="System.String" Scope="Application">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="css" Type="System.String" Scope="Application">
+      <Value Profile="(Default)" />
+    </Setting>
+  </Settings>
+</SettingsFile>

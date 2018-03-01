@@ -14,6 +14,8 @@ namespace AventStack.ExtentReports.MediaStorageNS
             {
                 case "http":
                     return new HttpMediaManager();
+                case "http-klov":
+                    return new HttpMediaManagerKlov();
                 default:
                     return null;
             }

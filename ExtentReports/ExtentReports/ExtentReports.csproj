@@ -113,6 +113,7 @@
     <Compile Include="MediaEntityBuilder.cs" />
     <Compile Include="MediaEntityModelProvider.cs" />
     <Compile Include="MediaStorageNS\HttpMediaManager.cs" />
+    <Compile Include="MediaStorageNS\HttpMediaManagerKlov.cs" />
     <Compile Include="MediaStorageNS\MediaStorage.cs" />
     <Compile Include="MediaStorageNS\MediaStorageManagerFactory.cs" />
     <Compile Include="Model\AbstractStructure.cs" />

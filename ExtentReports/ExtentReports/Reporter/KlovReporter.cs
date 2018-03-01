@@ -501,7 +501,7 @@ namespace AventStack.ExtentReports.Reporter
             var update = Builders<BsonDocument>.Update
                 .Set("status", test.Status.ToString().ToLower())
                 .Set("endTime", test.EndTime)
-                .Set("duration", test.RunDuration.ToString())
+                .Set("duration", test.RunDuration.Milliseconds)
                 .Set("leaf", test.HasChildren())
                 .Set("childNodesLength", test.NodeContext().Count)
                 .Set("categorized", test.HasCategory());

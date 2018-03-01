@@ -15,6 +15,8 @@
         
         <!-- title of the document -->
         <documentTitle>Extent</documentTitle>
+		
+		<chartVisibilityOnOpen>true</chartVisibilityOnOpen>
         
         <!-- report name - displayed at top-nav -->
         <reportName>Automation Report</reportName>

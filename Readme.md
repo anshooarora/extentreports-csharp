@@ -1,18 +1,14 @@
-# ExtentAPI v3 .NET
+# Extent Reporting API
 
 [![Join the chat at https://gitter.im/anshooarora/extentreports-csharp](https://badges.gitter.im/anshooarora/extentreports-csharp.svg)](https://gitter.im/anshooarora/extentreports-csharp?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
-#### Current Version: 3.1.0
+#### Current Version: 3.1.0, .NET Framework 4.5+ only.
 
-.NET Framework 4.5+ only.
-
-Note: [Klovv](https://github.com/anshooarora/klovv) report server is supported with ExtentAPI version 3.1.0 onwards.
+Note: [Klov](https://github.com/anshooarora/klovv) report server is supported with version 3.1.1 onwards.
 
 ### Documentation
 
 View [extentreports.com](http://extentreports.com/docs/versions/3/net/) for complete documentation.
-
-Note: Documentation is in progress and will be regularly updated. Please let me know if you find anything missing or incorrect.
 
 ### Samples
 

@@ -40,7 +40,7 @@ namespace AventStack.ExtentReports.Model
             get
             {
                 if (_screenCapture != null)
-                    _details = _details + _screenCapture.Source;
+                    return _details + _screenCapture.Source;
 
                 return _details;
             }

@@ -1,13 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.IO;
-using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Net;
+using System.IO;
+using System.Globalization;
+using System.Runtime.CompilerServices;
 
 using AventStack.ExtentReports.Model;
 
@@ -16,7 +14,6 @@ namespace AventStack.ExtentReports.MediaStorageNS
     public class HttpMediaManagerKlov : MediaStorage
     {
         private const string _route = "files/upload";
-
         private string _host;
 
         public void Init(string host)
@@ -24,18 +21,16 @@ namespace AventStack.ExtentReports.MediaStorageNS
             if (!host.Substring(host.Length - 1).Equals("/"))
                 host += "/";
 
-            this._host = host;
+            _host = host;
         }
 
+        [MethodImpl(MethodImplOptions.Synchronized)]
         public void StoreMedia(Media m)
         {
-            if (m.Path == null || m.Base64String != null)
-                return;
-
             if (!File.Exists(m.Path))
                 throw new IOException("The system cannot find the file specified " + m.Path);
 
-            var uri = new Uri(_host + _route);
+            var uri = new Uri(_host);
             var file = File.ReadAllBytes(m.Path);
             var fileName = m.Sequence + Path.GetExtension(m.Path);
 
@@ -50,8 +45,6 @@ namespace AventStack.ExtentReports.MediaStorageNS
                     client.DefaultRequestHeaders.Add("Accept", "application/json");
                     client.DefaultRequestHeaders.Add("Connection", "keep-alive");
                     client.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0");
-                    //client.DefaultRequestHeaders.Add("X-CSRF-TOKEN", _csrf);
-                    //client.DefaultRequestHeaders.Add("Cookie", _cookie);
 
                     using (var content = new MultipartFormDataContent(DateTime.Now.ToString(CultureInfo.InvariantCulture)))
                     {
@@ -77,7 +70,7 @@ namespace AventStack.ExtentReports.MediaStorageNS
                             '"' + "f" + '"',
                             '"' + fileName + '"');
 
-                        var result = client.PostAsync("/" + _route, content).Result;
+                        var result = client.PostAsync(_host + _route, content).Result;
 
                         if (result.StatusCode != HttpStatusCode.OK)
                         {

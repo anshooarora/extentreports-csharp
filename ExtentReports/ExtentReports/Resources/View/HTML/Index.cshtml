@@ -81,6 +81,12 @@
 			    @Model.GetReporterConfigurationSetting("js")
             </script>
         }
+		@if (!string.IsNullOrEmpty(Model.GetReporterConfigurationSetting("scripts")))
+        {
+            <script type='text/javascript'>
+			    @Model.GetReporterConfigurationSetting("scripts")
+            </script>
+        }
 	</body>
 	
 </html>

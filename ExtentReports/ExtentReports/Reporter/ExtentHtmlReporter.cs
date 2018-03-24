@@ -102,13 +102,13 @@ namespace AventStack.ExtentReports.Reporter
 
         private void LoadUserConfig()
         {
-            foreach (var pair in _reporterConfig.GetConfiguration())
+            foreach (var config in _configManager.Configuration)
             {
-                var key = pair.Key;
-                var value = pair.Value;
+                var key = config.Key;
+                var value = config.Value;
 
-                var c = new Config(key, value);
-                _configManager.AddConfig(c);
+                if (!string.IsNullOrEmpty(value))
+                    _reporterConfig.GetConfiguration()[key] = value;
             }
         }
 

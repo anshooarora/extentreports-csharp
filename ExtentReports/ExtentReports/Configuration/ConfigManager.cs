@@ -15,6 +15,8 @@ namespace AventStack.ExtentReports.Configuration
             _configList = new List<Config>();
         }
 
+        public List<Config> Configuration { get { return _configList; } }
+
         public string GetValue(string k)
         {
             var c = _configList.Where(x => x.Key.Equals(k));

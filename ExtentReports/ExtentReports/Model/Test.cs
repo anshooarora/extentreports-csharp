@@ -21,6 +21,7 @@ namespace AventStack.ExtentReports.Model
         public Status Status { [MethodImpl(MethodImplOptions.Synchronized)] get; [MethodImpl(MethodImplOptions.Synchronized)] private set; }
         public DateTime StartTime { get; set; }
         public DateTime EndTime { get; set; }
+        public IGherkinFormatterModel BehaviorDrivenType { get; set; }
 
         private string _name;
         private Test _parent;
@@ -160,8 +161,6 @@ namespace AventStack.ExtentReports.Model
 
             return _screenCaptureContext.Count > 0;
         }
-
-        public IGherkinFormatterModel BehaviorDrivenType;
 
         public bool IsBehaviorDrivenType
         {

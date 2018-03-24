@@ -375,7 +375,7 @@ namespace AventStack.ExtentReports.Reporter
             };
 
             if (test.IsBehaviorDrivenType)
-                document.Add("bddType", test.BehaviorDrivenType.ToString());
+                document.Add("bddType", test.BehaviorDrivenType.GetType().Name);
 
             _testCollection.InsertOne(document);
 
@@ -402,7 +402,7 @@ namespace AventStack.ExtentReports.Reporter
             };
 
             if (node.IsBehaviorDrivenType)
-                document.Add("bddType", node.BehaviorDrivenType.ToString());
+                document.Add("bddType", node.BehaviorDrivenType.GetType().Name);
 
             _testCollection.InsertOne(document);
 
@@ -497,6 +497,18 @@ namespace AventStack.ExtentReports.Reporter
 
         private void EndTestRecursive(Test test)
         {
+            List<string> categoryNameList = null;
+            if (test.HasCategory())
+            {
+                categoryNameList = test.CategoryContext().GetAllItems().Select(x => x.Name).ToList();
+            }
+
+            List<string> authorNameList = null;
+            if (test.HasAuthor())
+            {
+                authorNameList = test.AuthorContext().GetAllItems().Select(x => x.Name).ToList();
+            }
+
             var filter = Builders<BsonDocument>.Filter.Eq("_id", test.ObjectId);
             var update = Builders<BsonDocument>.Update
                 .Set("status", test.Status.ToString().ToLower())
@@ -504,15 +516,11 @@ namespace AventStack.ExtentReports.Reporter
                 .Set("duration", test.RunDuration.Milliseconds)
                 .Set("leaf", test.HasChildren())
                 .Set("childNodesLength", test.NodeContext().Count)
-                .Set("categorized", test.HasCategory());
+                .Set("categorized", test.HasCategory())
+                .Set("categoryNameList", categoryNameList)
+                .Set("authorNameList", authorNameList);
 
-            if (test.HasCategory())
-            {
-                var categoryNameList = test.CategoryContext().GetAllItems().Select(x => x.Name);
-                update.Set("categoryNameList", categoryNameList);
-            }
-
-            _testCollection.UpdateOne(filter, update);
+            _testCollection.FindOneAndUpdate(filter, update);
 
             if (test.Level > 0)
                 EndTestRecursive(test.Parent);

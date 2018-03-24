@@ -72,10 +72,17 @@ namespace AventStack.ExtentReports
             Type type = typeof(T);
             var obj = (IGherkinFormatterModel)Activator.CreateInstance(type);
 
-            var node = CreateNode(name, description);
+            var node = createNode(name, description);
             node.GetModel().BehaviorDrivenType = obj;
             AddNodeToReport(node);
 
+            return node;
+        }
+
+        private ExtentTest createNode(string name, string description = null)
+        {
+            var node = new ExtentTest(_extent, name, description);
+            ApplyCommonNodeSettings(node);
             return node;
         }
 
@@ -102,7 +109,7 @@ namespace AventStack.ExtentReports
         /// <returns>A <see cref="ExtentTest"/> object</returns>
         public ExtentTest CreateNode(GherkinKeyword gherkinKeyword, string name, string description = null)
         {
-            var node = CreateNode(name, description);
+            var node = createNode(name, description);
             node.GetModel().BehaviorDrivenType = gherkinKeyword.GetModel();
             return node;
         }

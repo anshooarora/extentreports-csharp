@@ -173,6 +173,7 @@ namespace AventStack.ExtentReports.Model
         [MethodImpl(MethodImplOptions.Synchronized)]
         internal void AssignCategory(Test test, Category category)
         {
+            _reporterCollection.ForEach(x => x.CategoryContext = _testAttrCategoryContext);
             _reporterCollection.ForEach(x => x.OnCategoryAssigned(test, category));
         }
 

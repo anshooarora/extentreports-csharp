@@ -34,6 +34,7 @@ namespace AventStack.ExtentReports.Reporter
         private IMongoCollection<BsonDocument> _mediaCollection;
         private IMongoCollection<BsonDocument> _categoryCollection;
         private IMongoCollection<BsonDocument> _authorCollection;
+        private IMongoCollection<BsonDocument> _environmentCollection;
 
         private MediaStorage _media;
         private ExtentXReporterConfiguration _reporterConfig;
@@ -219,6 +220,7 @@ namespace AventStack.ExtentReports.Reporter
             _mediaCollection = _db.GetCollection<BsonDocument>("media");
             _categoryCollection = _db.GetCollection<BsonDocument>("category");
             _authorCollection = _db.GetCollection<BsonDocument>("author");
+            _environmentCollection = _db.GetCollection<BsonDocument>("environment");
         }
 
         private void SetupProject(bool setupReport)
@@ -355,6 +357,44 @@ namespace AventStack.ExtentReports.Reporter
                 .Set("categoryIdList", categoryIdList);
 
             _reportCollection.UpdateOne(filter, update);
+
+            InsertUpdateSystemAttribute();
+        }
+
+        private void InsertUpdateSystemAttribute()
+        {
+            List<SystemAttribute> systemAttrList = SystemAttributeContext.SystemAttributeCollection;
+            foreach (SystemAttribute sysAttr in systemAttrList)
+            {
+                var document = new BsonDocument
+                {
+                    { "project", _projectId },
+                    { "report", _reportId },
+                    { "name", sysAttr.Name }
+                };
+
+                BsonDocument envSingle = _environmentCollection.Find(document).FirstOrDefault();
+
+                if (envSingle == null)
+                {
+                    document.Add("value", sysAttr.Value);
+                    _environmentCollection.InsertOne(document);
+                }
+                else
+                {
+                    ObjectId id = envSingle["_id"].AsObjectId;
+
+                    document = new BsonDocument
+                    {
+                        { "_id", id },
+                        { "value", sysAttr.Value }
+                    };
+
+                    _environmentCollection.UpdateOne(
+                            new BsonDocument("_id", id),
+                            new BsonDocument("$set", document));
+                }
+            }
         }
 
         public override void OnTestStarted(Test test)

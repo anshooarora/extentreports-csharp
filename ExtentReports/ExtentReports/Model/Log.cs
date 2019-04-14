@@ -19,17 +19,17 @@ namespace AventStack.ExtentReports.Model
         private ScreenCapture _screenCapture;
         private string _details;
 
-        private Log()
+        private Log(DateTime? timeStamp = null)
         {
-            Timestamp = DateTime.Now;
+            Timestamp = timeStamp ?? DateTime.Now;
         }
 
-        public Log(Test test) : this()
+        public Log(Test test, DateTime? timeStamp = null) : this(timeStamp)
         {
             ParentModel = test;
         }
 
-        public Log(ExtentTest extentTest) : this()
+        public Log(ExtentTest extentTest, DateTime? timeStamp = null) : this(timeStamp)
         {
             _parent = extentTest;
             ParentModel = _parent.GetModel();

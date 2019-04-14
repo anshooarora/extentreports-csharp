@@ -136,10 +136,11 @@ namespace AventStack.ExtentReports
         /// <param name="status"><see cref="Status"/></param>
         /// <param name="details">Log details</param>
         /// <param name="provider">A <see cref="MediaEntityModelProvider"/> object</param>
+        /// <param name="timeStamp">An override to allow for a specific timestamp to be used, rather than the current time</param>
         /// <returns>A <see cref="ExtentTest"/> object</returns>
-        public ExtentTest Log(Status status, string details, MediaEntityModelProvider provider = null)
+        public ExtentTest Log(Status status, string details, MediaEntityModelProvider provider = null, DateTime? timeStamp = null)
         {
-            Log evt = CreateLog(status, details);
+            Log evt = CreateLog(status, details, timeStamp);
 
             if (provider != null)
             {
@@ -196,14 +197,16 @@ namespace AventStack.ExtentReports
             return this;
         }
 
-        private Log CreateLog(Status status, string details = null)
+        private Log CreateLog(Status status, string details = null, DateTime? timeStamp = null)
         {
-            details = details == null ? "" : details.Trim();
+            details = details?.Trim() ?? "";
 
-            Log evt = new Log(this);
-            evt.Status = status;
-            evt.Details = details;
-            evt.Sequence = _test.LogContext().GetAllItems().Count + 1;
+            Log evt = new Log(this, timeStamp)
+            {
+                Status = status,
+                Details = details,
+                Sequence = _test.LogContext().GetAllItems().Count + 1
+            };
 
             return evt;
         }

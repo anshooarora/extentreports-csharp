@@ -202,7 +202,6 @@ namespace AventStack.ExtentReports
         {
             if (!test.HasChildren())
             {
-                IncrementItemCountByStatus(ItemLevel.Parent, test.Status);
                 test.LogContext().GetAllItems().ForEach(x =>
                 {
                     IncrementItemCountByStatus(ItemLevel.Child, x.Status);
@@ -210,6 +209,7 @@ namespace AventStack.ExtentReports
             }
             else
             {
+                IncrementItemCountByStatus(ItemLevel.Parent, test.Status);
                 test.NodeContext().GetAllItems().ForEach(x => ExtractStandardTestCountsTestStrategy(x));
             }
         }
